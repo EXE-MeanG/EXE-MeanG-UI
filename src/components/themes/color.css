@@ -1,0 +1,79 @@
+:root {
+  /* Primary Colors */
+  --primary-color: #030303;
+  --primary-background: #3b3b3b;
+
+  /* Secondary Colors */
+  --secondary-color: #daf1f8;
+  --secondary-background: #ec7063;
+
+  /* Text Colors */
+  --text-primary: #030303;
+  --text-secondary: #daf1f8;
+  --text-tertiary: #ffffff;
+  /* Background Colors */
+  --background-primary: #e2e2e2;
+
+  /* Accent Colors */
+  --accent-color: #f1c40f;
+  --accent-light: #f7dc6f;
+  --accent-dark: #d4ac0d;
+  /* Danger Colors */
+  --danger-color: #e74c3c;
+  --danger-light: #ec7063;
+  --danger-dark: #cb4335;
+  /* ================================================== */
+  /* ================================================== */
+  /* ================================================== */
+  /* Primary Gradients */
+  --primary-gradient: linear-gradient(
+    90deg,
+    rgba(218, 241, 248, 1) 15%,
+    rgba(164, 183, 190, 1) 38%,
+    rgba(255, 255, 255, 1) 54%,
+    rgba(182, 203, 210, 1) 72%,
+    rgba(24, 45, 51, 1) 100%
+  );
+  /* Secondary Gradients */
+  --secondary-gradient: linear-gradient(
+    90deg,
+    rgba(24, 45, 51, 1) 0%,
+    rgba(182, 203, 210, 1) 15%,
+    rgba(167, 186, 193, 1) 34%,
+    rgba(255, 255, 255, 1) 52%,
+    rgba(164, 183, 190, 1) 69%,
+    rgba(218, 241, 248, 1) 85%,
+    rgba(153, 173, 180, 1) 100%
+  );
+
+  /* Linear Text */
+  --linear-text: linear-gradient(
+    90deg,
+    rgba(37, 146, 185, 1) 0%,
+    rgba(218, 241, 248, 1) 100%
+  );
+  /* Linear Bar */
+  --linear-bard: linear-gradient(
+    90deg,
+    rgba(24, 45, 51, 1) 0%,
+    rgba(182, 203, 210, 1) 15%,
+    rgba(167, 186, 193, 1) 34%,
+    rgba(255, 255, 255, 1) 52%,
+    rgba(164, 183, 190, 1) 69%,
+    rgba(218, 241, 248, 1) 85%,
+    rgba(153, 173, 180, 1) 100%
+  ); /* Linear Disc */
+  --linear-disc: linear-gradient(
+    90deg,
+    rgba(251, 251, 253, 1) 7%,
+    rgba(200, 212, 218, 1) 24%,
+    rgba(255, 255, 255, 1) 43%,
+    rgba(174, 192, 206, 1) 53%,
+    rgba(227, 233, 238, 1) 66%,
+    rgba(250, 251, 252, 1) 71%,
+    rgba(214, 223, 230, 1) 86%,
+    rgba(184, 201, 211, 1) 92%
+  );
+}
+
+/* Example Usage */

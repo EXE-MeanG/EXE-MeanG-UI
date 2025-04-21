@@ -22,8 +22,11 @@ const config: Config = {
         "main-background": "var(--background-primary)",
       },
       backgroundImage: {
-        "hero-pattern": "url('../assets/backgrounds/backgoundmain.png')",
+        "hero-pattern": "url('../assets/backgrounds/background-main.png')",
+        "example-pattern":
+          "url('../assets/backgrounds/background-example.png')",
         "primary-gradient": "var(--primary-gradient)",
+        "secondary-gradient": "var(--secondary-gradient)",
         "disc-gradient": "var(--linear-disc)",
         "custom-gradient":
           "linear-gradient(90deg, rgba(24,45,51,1) 0%, rgba(182,203,210,1) 15%, rgba(167,186,193,1) 34%, rgba(255,255,255,1) 52%, rgba(164,183,190,1) 69%, rgba(218,241,248,1) 85%, rgba(153,173,180,1) 100%)",
@@ -36,12 +39,12 @@ const config: Config = {
           },
           "10%": { opacity: "1" },
           "40%": {
-            transform: "translate(150%, -50%) rotate(45deg)",
+            transform: "translate(150%, -150%) rotate(45deg)",
             opacity: "1",
           },
           "41%": { opacity: "0" },
           "100%": {
-            transform: "translate(150%, -50%) rotate(45deg)",
+            transform: "translate(150%, -150%) rotate(45deg)",
             opacity: "0",
           },
         },

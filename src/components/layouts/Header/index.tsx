@@ -1,40 +1,49 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
-
+import Logo from "@/src/assets/logos/main-logo.png";
 const Header = () => {
   return (
-    <header className="w-full h-16 flex items-center justify-between px-8 shadow-md bg-transparent ">
+    <header className="w-full h-16 flex items-center justify-between px-8 shadow-2xl bg-transparent ">
       {/* Logo */}
-      <div className="text-2xl font-bold text-blue-600">
-        <Link href="/">MyLogo</Link>
+      <div className="text-2xl font-bold text-blue-600 ">
+        <Link href="/" className="flex items-center">
+          <Image
+            className="flex items-center"
+            alt="Logo"
+            src={Logo}
+            width={200}
+            height={200}
+          />
+        </Link>
       </div>
 
       {/* Navigation Menu */}
       <nav className="flex gap-8">
         <Link
           href="/"
-          className="text-secondary text-lg font-semibold hover:text-white"
+          className="text-secondary not-italic text-xl font-semibold hover:text-white"
         >
           Trang chủ
         </Link>
         <Link
           href="/about"
-          className="text-secondary text-lg font-semibold hover:text-white"
+          className="text-secondary not-italic text-xl font-semibold hover:text-white"
         >
-          Giới thiệu
+          Hồ Sơ Cá Nhân
         </Link>
         <Link
           href="/services"
-          className="text-secondary text-lg font-semibold hover:text-white"
+          className="text-secondary not-italic text-xl font-semibold hover:text-white"
         >
-          Dịch vụ
+          Tủ Đồ
         </Link>
         <Link
           href="/contact"
-          className="text-secondary text-lg font-semibold hover:text-white"
+          className="text-secondary not-italic text-xl font-semibold hover:text-white"
         >
-          Liên hệ
+          Lịch Trình
         </Link>
       </nav>
 
@@ -42,13 +51,13 @@ const Header = () => {
       <div className="flex gap-4">
         <Link
           href="/login"
-          className="px-4 py-2 border rounded-md text-gray-700 hover:border-blue-600 hover:text-blue-600"
+          className="px-4 py-2 border-r-2  text-secondary text-xl  hover:text-white"
         >
           Đăng nhập
         </Link>
         <Link
           href="/register"
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+          className="px-4 py-2  text-secondary text-xl  hover:text-white"
         >
           Đăng ký
         </Link>

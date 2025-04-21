@@ -45,6 +45,7 @@
     rgba(218, 241, 248, 1) 85%,
     rgba(153, 173, 180, 1) 100%
   );
+/* tertiary linear */
 
   /* Linear Text */
   --linear-text: linear-gradient(

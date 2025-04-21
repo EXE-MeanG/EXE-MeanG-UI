@@ -21,27 +21,27 @@ const ButtonCustom: React.FC<ButtonCustomProps> = ({
 }) => {
   return (
     <Button
-      className={`w-48 relative bg-[#182D33]  bg-custom-gradient ${className}`}
+      className={`w-48 relative rounded-lg bg-[#182D33]  bg-custom-gradient ${className} overflow-hidden`}
       type={type}
       onClick={onClick}
       disabled={disabled}
       loading={loading}
     >
-      <div className="stroke-wrapper w-full h-full absolute overflow-hidden">
+      <div className="stroke-wrapper z-10 w-full h-full absolute overflow-hidden">
         <div
-          className="absolute top-0 left-0 w-32 h-1 bg-white opacity-50 mix-blend-lighten blur-sm animate-diagonalMove"
+          className="absolute bottom-0 left-0 w-32 h-1 bg-white opacity-85 mix-blend-lighten blur-sm animate-diagonalMove"
           style={{ animationDelay: "3.8s", zIndex: 10 }}
         ></div>
       </div>
-
-      <Image 
+      <div className="mask-background absolute bg-white w-full h-full opacity-60"></div>
+      <Image
         src={Spakle}
         alt="logo"
         width={20}
         height={20}
-        className="absolute right-[-10px] top-[-7px] w-5 h-5 animate-sparkle pointer-events-none"
+        className="absolute z-10 right-[-10px] top-[-7px] w-5 h-5 animate-sparkle pointer-events-none"
       />
-      {children}
+      <div className="content z-10">{children}</div>
     </Button>
   );
 };

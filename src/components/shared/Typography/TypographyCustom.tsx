@@ -11,14 +11,14 @@ const TypographyCustom: React.FC<TypographyCustomProps> = ({
   text,
   size = 48,
 }) => {
-  const width = text.length * size * 0.6; // Tính chiều rộng của chữ
-  const height = size * 1.5; // Chiều cao của SVG
+  const width = text.length * size * 0.6;
+  const height = size * 1.5;
 
   return (
     <svg
-      width={width} // Cập nhật lại width sao cho phù hợp với kích thước chữ
+      width={width}
       height={height}
-      viewBox={`0 0 ${width} ${height}`} // Cập nhật lại viewBox sao cho phù hợp với kích thước chữ
+      viewBox={`0 0 ${width} ${height}`}
       preserveAspectRatio="xMidYMid meet"
     >
       <defs>
@@ -29,11 +29,11 @@ const TypographyCustom: React.FC<TypographyCustomProps> = ({
           x2="100%"
           y2="50%"
         >
-          <stop offset="0%" stopColor="#DAF1F8" />
-          <stop offset="38%" stopColor="#A4B7BE" />
-          <stop offset="54%" stopColor="#FFFFFF" />
-          <stop offset="72%" stopColor="#B6CBD2" />
-          <stop offset="100%" stopColor="#B6CBD2" />
+          <stop offset="0%" stopColor="#E6FAFF" /> {/* Sáng hơn #DAF1F8 */}
+          <stop offset="38%" stopColor="#B5C9D1" /> {/* Sáng hơn #A4B7BE */}
+          <stop offset="54%" stopColor="#FFFFFF" /> {/* Giữ nguyên trắng */}
+          <stop offset="72%" stopColor="#C8DDE4" /> {/* Sáng hơn #B6CBD2 */}
+          <stop offset="100%" stopColor="#C8DDE4" /> {/* Sáng hơn #B6CBD2 */}
           <animateTransform
             attributeName="gradientTransform"
             type="rotate"

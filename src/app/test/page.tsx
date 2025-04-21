@@ -22,7 +22,6 @@ export default function Home() {
       />
       <TypographyCustom text="Hello Gradient" />
       <DiscCustom iconSrc={Shoppe.src} iconSize={100} />
-      <CardCustom iconSrc={Shoppe.src} />
       <CalendarAnimation />
     </div>
   );

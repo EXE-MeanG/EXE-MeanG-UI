@@ -20,6 +20,7 @@ const config: Config = {
       backgroundColor: {
         primary: "var(--primary-background)",
         "main-background": "var(--background-primary)",
+        "linear-text": "linear-gradient(90deg, #ff7e5f, #feb47b)",
       },
       backgroundImage: {
         "hero-pattern": "url('../assets/backgrounds/background-main.png')",

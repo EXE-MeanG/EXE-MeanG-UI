@@ -17,6 +17,8 @@ import Icon1 from "@/src/assets/icons/shoppe.png";
 import Icon2 from "@/src/assets/icons/lazada.png";
 import Icon3 from "@/src/assets/icons/taobuy.png";
 import Line from "@/src/assets/items/line.png";
+import Spakle from "@/src/assets/images/star.png";
+
 import CalendarAnimation from "../components/shared/CalendarAnimated";
 import Link from "next/link";
 import Footer from "../components/layouts/Footer";
@@ -33,13 +35,22 @@ export default function Home() {
             className="min-w-2xl flex flex-col items-center justify-center text-center"
           >
             <TypographyCustom text="Your fashionista!" size={100} />
-            <p className="text-4xl text-tertiary mb-6 inline-block w-[80%]">
+            <p className="text-4xl text-primary font-semibold mb-6 inline-block w-[64%] text-shadow-md ">
               Chuyên gia tư vấn thời trang chuyên nghiệp dành riêng cho bạn.
               Giúp bạn kết hợp và tạo nên phong cách cá nhân của mình..
             </p>
-            <ButtonCustom className="font-semibold text-xl w-[328px] h-[79px] ">
-              Try MEANG
-            </ButtonCustom>
+            <div className="sparkle relative">
+              <ButtonCustom className="font-semibold text-4xl w-[328px] h-[79px] ">
+                Try MEANG
+              </ButtonCustom>
+              <Image
+                src={Spakle}
+                alt="logo"
+                // width={20}
+                // height={20}
+                className="absolute z-10 right-[-10px] top-[-7px] w-8 h-8 animate-sparkle pointer-events-none"
+              />
+            </div>
           </motion.div>
         </div>
       </section>

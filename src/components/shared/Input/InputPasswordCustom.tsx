@@ -1,0 +1,37 @@
+"use client";
+
+import React from "react";
+import { Input, InputProps } from "antd";
+import "./InputCustom.css";
+
+interface InputCustomProps extends InputProps {
+  value?: string;
+  placeholder?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
+const InputPasswordCustom: React.FC<InputCustomProps> = ({
+  value,
+  placeholder,
+  onChange,
+  className,
+  ...props
+}) => {
+  return (
+    <div
+      className={`relative p-[2px] rounded-md overflow-hidden bg-primary-gradient input-glow-border w-64 ${className} bg-red-950`}
+    >
+      <div className="bg-primary h-full w-full rounded-md hover:opacity-90">
+        <Input.Password
+          value={value}
+          onChange={onChange}
+          placeholder={placeholder}
+          className="h-full w-full border-none  text-primary 
+          placeholder-gray-400 px-4 focus:ring-0 focus:outline-none focus:bg-white hover:bg-white  rounded-md"
+        />
+      </div>
+    </div>
+  );
+};
+
+export default InputPasswordCustom;

@@ -11,6 +11,7 @@
   --text-primary: #030303;
   --text-secondary: #daf1f8;
   --text-tertiary: #ffffff;
+  --text-gray: #7e7e7e;
   /* Background Colors */
   --background-primary: #e2e2e2;
 
@@ -45,7 +46,7 @@
     rgba(218, 241, 248, 1) 85%,
     rgba(153, 173, 180, 1) 100%
   );
-/* tertiary linear */
+  /* tertiary linear */
 
   /* Linear Text */
   --linear-text: linear-gradient(

@@ -15,6 +15,7 @@ const config: Config = {
         primary: "var(--text-primary)",
         secondary: "var(--text-secondary)",
         tertiary: "var(--text-tertiary)",
+        quaternary: "var(--text-gray)",
         "main-background": "var(--background-primary)",
       },
       backgroundColor: {
@@ -61,7 +62,7 @@ const config: Config = {
       },
     },
   },
-  plugins: [],
+  plugins: [require("tailwindcss-textshadow")],
 };
 
 export default config;

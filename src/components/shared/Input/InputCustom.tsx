@@ -19,15 +19,15 @@ const InputCustom: React.FC<InputCustomProps> = ({
 }) => {
   return (
     <div
-      className={`relative p-[2px] rounded-xl overflow-hidden bg-primary-gradient input-glow-border w-64 ${className} `}
+      className={`relative p-[2px] rounded-md overflow-hidden bg-primary-gradient input-glow-border w-64 ${className} bg-red-950`}
     >
-      <div className="bg-primary rounded-xl">
+      <div className="bg-primary h-full w-full rounded-md hover:opacity-90">
         <Input
           value={value}
           onChange={onChange}
           placeholder={placeholder}
-          className="h-12 w-full border-none bg-transparent text-white 
-          placeholder-gray-400 px-4 focus:ring-0 focus:outline-none focus:bg-transparent hover:bg-transparent hover:opacity-70"
+          className="h-full w-full border-none  text-primary 
+          placeholder-gray-400 px-4 focus:ring-0 focus:outline-none focus:bg-white hover:bg-white  rounded-md"
         />
       </div>
     </div>

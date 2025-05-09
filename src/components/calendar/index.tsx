@@ -8,6 +8,7 @@ import { createEventModalPlugin } from "@schedule-x/event-modal";
 import { useEffect, useState, useRef } from "react";
 
 import "@schedule-x/theme-default/dist/index.css";
+import { createCurrentTimePlugin } from "@schedule-x/current-time";
 import "./style.css";
 
 function CalendarApp() {
@@ -22,11 +23,16 @@ function CalendarApp() {
       {
         id: "1",
         title: "Event 1",
-        start: "2025-04-24 21:05",
-        end: "2025-04-24 22:35",
+        start: "2025-05-09 21:05",
+        end: "2025-05-09 22:35",
       },
     ],
-    plugins: [eventsService, createDragAndDropPlugin(), eventModal],
+    plugins: [
+      eventsService,
+      createDragAndDropPlugin(),
+      eventModal,
+      createCurrentTimePlugin(),
+    ],
     callbacks: {
       onRender: () => {
         eventsService.getAll();

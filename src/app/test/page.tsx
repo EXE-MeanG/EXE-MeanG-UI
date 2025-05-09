@@ -8,11 +8,13 @@ import DiscCustom from "@/src/components/shared/Disc/discCustom";
 import CardCustom from "@/src/components/shared/Card/cardCustom";
 import CalendarAnimation from "@/src/components/shared/CalendarAnimated";
 import ButtonCustom from "@/src/components/shared/Button/ButtonCustom";
+import ButtonDiscCustom from "@/src/components/shared/ButtonDIsc/discCustom";
+import CalendarMini from "@/src/components/shared/CalendarMini";
 
 export default function Home() {
   const [inputValue, setInputValue] = useState("");
   return (
-    <div className="h-[4000px]">
+    <div className="h-[4000px] bg-green-900">
       <ButtonCustom className="">WWelcome</ButtonCustom>;
       <InputCustom
         value={inputValue}

@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@ant-design/icons": "^5.6.1",
+    "@schedule-x/current-time": "^2.30.0",
     "@schedule-x/drag-and-drop": "^2.28.0",
     "@schedule-x/event-modal": "^2.29.0",
     "@schedule-x/events-service": "^2.28.0",
@@ -17,6 +18,7 @@
     "@schedule-x/theme-default": "^2.28.0",
     "antd": "^5.24.7",
     "date-fns": "^4.1.0",
+    "dayjs": "^1.11.13",
     "framer-motion": "^12.7.4",
     "next": "14.2.24",
     "react": "^18",

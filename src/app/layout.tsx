@@ -9,7 +9,7 @@ import localizedFormat from "dayjs/plugin/localizedFormat";
 import updateLocale from "dayjs/plugin/updateLocale";
 dayjs.extend(localizedFormat);
 dayjs.extend(updateLocale);
-dayjs.locale("vi"); 
+dayjs.locale("vi");
 
 // Cập nhật tên thứ ngắn (Mon, Tue...) thành tiếng Việt nếu cần:
 dayjs.updateLocale("vi", {

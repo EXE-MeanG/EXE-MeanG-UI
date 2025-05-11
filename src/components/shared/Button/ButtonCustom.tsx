@@ -20,8 +20,8 @@ const ButtonCustom: React.FC<ButtonCustomProps> = ({
 }) => {
   return (
     <Button
-      className={`w-48 relative rounded-lg bg-[#182D33]  bg-custom-gradient border-none ${className} 
-      overflow-hidden hover:opacity-70  hover:!bg-custom-gradient hover:border-none hover:!text-primary`}
+      className={`w-48 relative rounded-lg bg-[#182D33]  bg-custom-gradient border-none  
+      overflow-hidden hover:opacity-70  hover:!bg-custom-gradient hover:border-none hover:!text-primary ${className}`}
       type={type}
       onClick={onClick}
       disabled={disabled}

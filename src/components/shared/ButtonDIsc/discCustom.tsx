@@ -8,6 +8,7 @@ interface ButtonDiscCustomProps {
   height?: string; // ví dụ: "h-12" hoặc "h-[50px]"
   className?: string; // custom class từ ngoài
   children: React.ReactNode;
+  onClick?: () => void;
 }
 
 const ButtonDiscCustom: React.FC<ButtonDiscCustomProps> = ({
@@ -15,9 +16,11 @@ const ButtonDiscCustom: React.FC<ButtonDiscCustomProps> = ({
   height = "h-12",
   className = "",
   children,
+  onClick,
 }) => {
   return (
     <button
+      onClick={onClick}
       className={`relative overflow-hidden font-medium flex items-center justify-center glass-background ${width} ${height} ${className}`}
     >
       {/* Nền ánh sáng xoay */}

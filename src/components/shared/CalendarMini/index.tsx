@@ -6,13 +6,14 @@ import type { Dayjs } from "dayjs";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import "dayjs/locale/vi";
+import { useDateStore } from "@/src/hooks/useDateStore";
 
 dayjs.locale("vi");
 
 const CalendarMini: React.FC = () => {
   const today = dayjs(); // cố định ngày hôm nay
   const [panelDate, setPanelDate] = useState<Dayjs>(today); // dùng cho hiển thị tháng trong lịch
-
+  const { setSelectedDate } = useDateStore();
   const handleMonthChange = (direction: "prev" | "next") => {
     const newDate =
       direction === "prev"
@@ -20,7 +21,9 @@ const CalendarMini: React.FC = () => {
         : panelDate.add(1, "month");
     setPanelDate(newDate);
   };
-
+  const handleSelect = (date: Dayjs) => {
+    setSelectedDate(date.format("YYYY-MM-DD"));
+  };
   return (
     <div>
       <Calendar
@@ -41,6 +44,7 @@ const CalendarMini: React.FC = () => {
             </div>
           </div>
         )}
+        onSelect={handleSelect}
         fullCellRender={(date) => {
           const isToday = date.isSame(today, "day");
           return (

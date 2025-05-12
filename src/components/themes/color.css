@@ -14,7 +14,8 @@
   --text-gray: #7e7e7e;
   /* Background Colors */
   --background-primary: #e2e2e2;
-
+  /* border color */
+  --border-primary: #0957d0;
   /* Accent Colors */
   --accent-color: #f1c40f;
   --accent-light: #f7dc6f;
@@ -75,6 +76,16 @@
     rgba(250, 251, 252, 1) 71%,
     rgba(214, 223, 230, 1) 86%,
     rgba(184, 201, 211, 1) 92%
+  );
+  --week-date-bg: linear-gradient(
+    90deg,
+    rgba(148, 191, 204, 1) 0%,
+    rgba(245, 253, 255, 1) 15%,
+    rgba(192, 214, 223, 1) 34%,
+    rgba(255, 255, 255, 1) 52%,
+    rgba(195, 218, 226, 1) 69%,
+    rgba(227, 246, 252, 1) 85%,
+    rgba(153, 173, 180, 1) 100%
   );
 }
 

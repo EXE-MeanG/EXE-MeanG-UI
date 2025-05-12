@@ -1,0 +1,36 @@
+.glass-background {
+  background: conic-gradient(
+    rgba(251, 251, 253, 1) 0deg,
+    rgba(200, 212, 218, 1) 90deg,
+    rgba(255, 255, 255, 1) 150deg,
+    rgba(174, 192, 206, 1) 200deg,
+    rgba(227, 233, 238, 1) 250deg,
+    rgba(250, 251, 252, 1) 300deg,
+    rgba(214, 223, 230, 1) 330deg,
+    rgba(184, 201, 211, 1) 360deg
+  );
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.spin-light {
+  background: conic-gradient(
+    rgba(251, 251, 253, 1) 0deg,
+    rgba(200, 212, 218, 1) 90deg,
+    rgba(255, 255, 255, 1) 150deg,
+    rgba(174, 192, 206, 1) 200deg,
+    rgba(227, 233, 238, 1) 250deg,
+    rgba(250, 251, 252, 1) 300deg,
+    rgba(214, 223, 230, 1) 330deg,
+    rgba(184, 201, 211, 1) 360deg
+  );
+  animation: rotate-light 6s linear infinite;
+}
+
+@keyframes rotate-light {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

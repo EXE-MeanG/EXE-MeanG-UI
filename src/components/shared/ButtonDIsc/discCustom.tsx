@@ -21,7 +21,7 @@ const ButtonDiscCustom: React.FC<ButtonDiscCustomProps> = ({
   return (
     <button
       onClick={onClick}
-      className={`relative overflow-hidden font-medium flex items-center justify-center glass-background ${width} ${height} ${className}`}
+      className={`relative overflow-hidden font-medium shadow-sm flex items-center justify-center glass-background ${width} ${height} ${className}`}
     >
       {/* Nền ánh sáng xoay */}
       <div className="absolute w-[1000px] h-[1000px] z-0 spin-light" />

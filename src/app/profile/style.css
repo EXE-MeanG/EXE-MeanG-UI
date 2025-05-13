@@ -1,0 +1,35 @@
+.profile-content {
+  position: relative;
+  width: 100vw;
+  height: calc(100vh - 64px);
+  background: var(--linear-bg);
+}
+.profile-content::after {
+  content: ""; /* Cần phải có content để hiển thị pseudo-element */
+  position: absolute; /* Đặt pseudo-element lên trên cùng của phần tử */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255); /* Màu trắng với độ mờ */
+  z-index: 0; /* Đảm bảo overlay nằm trên cùng */
+  opacity: 0.65;
+  inset: 0;
+}
+.logout-modal {
+  .ant-modal-content {
+    padding: 40px !important;
+  }
+  .ant-modal-header {
+    border-bottom: 1px solid #ccc !important;
+    .ant-modal-title {
+      font-size: 36px !important;
+      font-weight: 600 !important;
+    }
+  }
+  .ant-modal-body {
+    font-size: 24px !important;
+    margin-top: 10px !important;
+    margin-bottom: 30px !important;
+  }
+}

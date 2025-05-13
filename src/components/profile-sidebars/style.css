@@ -1,0 +1,19 @@
+.menu-container {
+  .ant-menu-item {
+    padding: 0px 30px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    font-size: 18px !important;
+    font-weight: 500;
+    border-right: 5px solid transparent;
+    border-radius: 0px !important;
+  }
+  .ant-menu-item-selected {
+    border-right: 5px solid var(--border-primary);
+  }
+  .ant-menu-item-icon {
+    font-size: 18px !important;
+    font-weight: 500;
+  }
+}

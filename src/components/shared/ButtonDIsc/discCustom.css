@@ -10,8 +10,11 @@
     rgba(184, 201, 211, 1) 360deg
   );
   border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: box-shadow 0.3s ease-in-out;
 }
-
+.glass-background:hover {
+  opacity: 0.5;
+}
 .spin-light {
   background: conic-gradient(
     rgba(251, 251, 253, 1) 0deg,

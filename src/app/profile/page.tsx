@@ -5,6 +5,8 @@ import Sidebar from "@/src/components/profile-sidebars";
 import { useState } from "react";
 import "./style.css";
 import { Button, Modal } from "antd";
+import Notification from "@/src/components/profile-notification";
+import Security from "@/src/components/profile-security";
 export default function Profile() {
   const [selected, setSelected] = useState("profile");
 
@@ -44,6 +46,12 @@ export default function Profile() {
               </Modal>
             </>
           )}
+          {selected === "notifications" && (
+            <>
+              <Notification />
+            </>
+          )}
+          {selected === "security" && <Security />}
         </div>
       </div>
     </div>

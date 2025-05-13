@@ -3,11 +3,12 @@ import { AntDesignOutlined } from "@ant-design/icons";
 import { Button, Input, DatePicker, Radio, Row, Col, Avatar } from "antd";
 import AvatarDump from "@/src/assets/images/avatardump.png";
 import AvaDiscCustom from "../shared/AvaDIsc/discCustom";
-import ButtonDiscCustom from "../shared/ButtonDIsc/discCustom";
 import InputCustom from "../shared/Input/InputCustom";
 import DatePickerCustom from "../shared/Input/DatePickerCustom";
 import RadioCustomGroup from "../shared/RadioCustom";
 import { useState } from "react";
+import ButtonCustom from "../shared/Button/ButtonCustom";
+import ButtonDiscCustom from "../shared/ButtonDIsc/discCustom";
 export default function ProfileForm() {
   const [gender, setGender] = useState("male");
   return (
@@ -103,6 +104,11 @@ export default function ProfileForm() {
           />
         </Col>
       </Row>
+      <div className="comfirm p-10 w-full flex justify-end">
+        <ButtonCustom className="!w-32 h-10 rounded-sm shadow-md font-semibold">
+          Lưu thay đổi
+        </ButtonCustom>
+      </div>
     </div>
   );
 }

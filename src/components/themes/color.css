@@ -5,7 +5,7 @@
 
   /* Secondary Colors */
   --secondary-color: #daf1f8;
-  --secondary-background: #ec7063;
+  --secondary-background: #e3e9ee;
 
   /* Text Colors */
   --text-primary: #030303;
@@ -68,6 +68,17 @@
   ); /* Linear Disc */
   --linear-disc: linear-gradient(
     90deg,
+    rgba(251, 251, 253, 1) 7%,
+    rgba(200, 212, 218, 1) 24%,
+    rgba(255, 255, 255, 1) 43%,
+    rgba(174, 192, 206, 1) 53%,
+    rgba(227, 233, 238, 1) 66%,
+    rgba(250, 251, 252, 1) 71%,
+    rgba(214, 223, 230, 1) 86%,
+    rgba(184, 201, 211, 1) 92%
+  );
+  --linear-bg: linear-gradient(
+    180deg,
     rgba(251, 251, 253, 1) 7%,
     rgba(200, 212, 218, 1) 24%,
     rgba(255, 255, 255, 1) 43%,

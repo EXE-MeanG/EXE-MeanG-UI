@@ -30,7 +30,7 @@ const CardCustom: React.FC<CardCustom> = ({
           alt={cardAlt}
           width={cardWidth}
           height={cardHeight}
-          className="w-full h-full object-cover "
+          className="w-[80%] h-[80%] object-cover absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2  "
         />
       </div>
     </div>

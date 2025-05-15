@@ -1,0 +1,6 @@
+.item-carousel {
+  .ant-upload-select {
+    width: 179px !important;
+    height: 179px !important;
+  }
+}

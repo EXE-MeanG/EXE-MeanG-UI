@@ -106,6 +106,7 @@ function ItemCarousel() {
               className="w-[179px] h-[179px] "
               cardWidth={100}
               cardHeight={100}
+              key={index}
             />
           );
         })}

@@ -3,7 +3,30 @@
 import Image from "next/image";
 import Link from "next/link";
 import Logo from "@/src/assets/logos/main-logo.png";
+import { useEffect, useState } from "react";
+import { UserOutlined } from "@ant-design/icons";
+import { MenuProps } from "antd";
 const Header = () => {
+  const [userName, setUserName] = useState("");
+
+  useEffect(() => {
+    const storeUserName = localStorage.getItem("auth-storage");
+    if (storeUserName) {
+      const parse = JSON.parse(storeUserName);
+      const name = parse?.state?.user?.username;
+      setUserName(name);
+    }
+  }, []);
+  const items: MenuProps["items"] = [
+    {
+      key: "1",
+      label: <Link href={"/"}>Cài đặt tài khoảng</Link>,
+    },
+    {
+      key: "2",
+      label: <Link href={"/"}>Đăng Xuất</Link>,
+    },
+  ];
   return (
     <header className="w-full h-16 flex items-center justify-between px-8 shadow-2xl bg-transparent ">
       {/* Logo */}
@@ -48,20 +71,27 @@ const Header = () => {
       </nav>
 
       {/* Auth Buttons */}
-      <div className="flex gap-4">
-        <Link
-          href="/login"
-          className="px-4 py-2 border-r-2  text-secondary text-xl  hover:text-white"
-        >
-          Đăng nhập
-        </Link>
-        <Link
-          href="/register"
-          className="px-4 py-2  text-secondary text-xl  hover:text-white"
-        >
-          Đăng ký
-        </Link>
-      </div>
+      {userName ? (
+        <div className="welcome-text text-secondary font-semibold text-xl flex gap-4 ">
+          <UserOutlined />
+          <span>Xin chào {userName}</span>
+        </div>
+      ) : (
+        <div className="flex gap-4">
+          <Link
+            href="/login"
+            className="px-4 py-2 border-r-2  text-secondary text-xl  hover:text-white"
+          >
+            Đăng nhập
+          </Link>
+          <Link
+            href="/register"
+            className="px-4 py-2  text-secondary text-xl  hover:text-white"
+          >
+            Đăng ký
+          </Link>
+        </div>
+      )}
     </header>
   );
 };

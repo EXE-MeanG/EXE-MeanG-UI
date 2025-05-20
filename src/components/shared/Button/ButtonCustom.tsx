@@ -1,7 +1,7 @@
 import React from "react";
-import { Button } from "antd";
+import { Button, ButtonProps } from "antd";
 import Image from "next/image";
-interface ButtonCustomProps {
+interface ButtonCustomProps extends ButtonProps {
   type?: "primary" | "default" | "dashed" | "text" | "link" | undefined;
   onClick?: () => void;
   disabled?: boolean;
@@ -17,6 +17,7 @@ const ButtonCustom: React.FC<ButtonCustomProps> = ({
   loading = false,
   children,
   className = "",
+  htmlType,
 }) => {
   return (
     <Button
@@ -24,8 +25,8 @@ const ButtonCustom: React.FC<ButtonCustomProps> = ({
       overflow-hidden hover:opacity-70  hover:!bg-custom-gradient hover:border-none hover:!text-primary ${className}`}
       type={type}
       onClick={onClick}
-      disabled={disabled}
       loading={loading}
+      htmlType={htmlType}
     >
       <div className="stroke-wrapper z-10 w-full h-full absolute overflow-hidden">
         <div

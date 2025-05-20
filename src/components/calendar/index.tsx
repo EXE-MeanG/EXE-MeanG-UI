@@ -11,7 +11,7 @@ import "@schedule-x/theme-default/dist/index.css";
 import dayjs from "dayjs";
 import "dayjs/locale/vi";
 import "./style.css";
-import { useDateStore } from "@/src/hooks/useDateStore";
+import { useDateStore } from "@/src/stores/dateStore";
 import { Modal } from "antd";
 
 function generateCustomContent(event: any) {

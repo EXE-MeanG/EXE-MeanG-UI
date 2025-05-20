@@ -6,7 +6,7 @@ import type { Dayjs } from "dayjs";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import "dayjs/locale/vi";
-import { useDateStore } from "@/src/hooks/useDateStore";
+import { useDateStore } from "@/src/stores/dateStore";
 
 dayjs.locale("vi");
 

@@ -15,7 +15,7 @@ import {
 import { login } from "@/src/services/auth";
 import { useAuthStore } from "@/src/stores/authStore";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { notFound, useRouter } from "next/navigation";
 type FieldType = {
   email?: string;
   password?: string;
@@ -33,7 +33,9 @@ export default function Login() {
       });
       setLoading(false);
       router.push("/");
-    } catch (error) {}
+    } catch (error) {
+      router.push("/not-found");
+    }
   };
   const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (
     errorInfo

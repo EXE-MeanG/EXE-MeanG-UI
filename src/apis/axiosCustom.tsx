@@ -62,7 +62,7 @@ export class Api {
     );
 
     // ✅ Response interceptor: tự refresh token nếu 401
-    this.instance.interceptors.response.use(    
+    this.instance.interceptors.response.use(
       (response) => response,
       async (error) => {
         const originalRequest = error.config;
@@ -73,22 +73,24 @@ export class Api {
             const refreshToken = useAuthStore.getState().refreshToken;
             if (!refreshToken) throw new Error("No refresh token");
 
-            const response = await axios.post("/api/refresh-token", {
-              refreshToken,
-            });
+            const response = await axios.post(
+              `${baseURL}api/v1/auth/refresh-token`,
+              {
+                refreshToken,
+              }
+            );
 
             const {
               accessToken: newAccessToken,
               refreshToken: newRefreshToken,
-            } = response.data;
+            } = response.data.data;
 
             useAuthStore.getState().setTokens(newAccessToken, newRefreshToken);
 
             originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
             return this.instance(originalRequest);
           } catch (err) {
-            useAuthStore.getState().clearTokens(); // Xóa token khi refresh fail
-            // Bạn có thể redirect logout hoặc hiển thị message ở đây
+            useAuthStore.getState().clearTokens();
             return Promise.reject(err);
           }
         }

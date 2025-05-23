@@ -10,36 +10,21 @@ import {
 import "./style.css";
 import Image from "next/image";
 import CardCustom from "../shared/Card/cardCustom";
-import U1 from "@/src/assets/upper/u1.png";
 import Plus from "@/src/assets/icons/plus.png";
-function ItemCarousel() {
+
+interface ItemCarouselProps {
+  type: "upper" | "downer" | "accessories";
+  items: Array<{
+    imageSrc: string;
+    imageAlt: string;
+  }>;
+  onUpload?: (type: string, file: File) => Promise<void>;
+}
+
+function ItemCarousel({ type, items, onUpload }: ItemCarouselProps) {
   type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
   const [loading, setLoading] = useState(false);
-  const [imageUrl, setImageUrl] = useState<string>();
   const carouselRef = useRef<any>(null);
-
-  const data = [
-    {
-      imageSrc: "@/src/assets/upper/u1.png",
-      imageAlt: "u1",
-    },
-    {
-      imageSrc: "@/src/assets/upper/u2.png",
-      imageAlt: "u2",
-    },
-    {
-      imageSrc: "@/src/assets/upper/u3.png",
-      imageAlt: "u3",
-    },
-    {
-      imageSrc: "@/src/assets/upper/u4.png",
-      imageAlt: "u4",
-    },
-    {
-      imageSrc: "@/src/assets/upper/u5.png",
-      imageAlt: "u5",
-    },
-  ];
 
   const next = () => {
     carouselRef.current.next();
@@ -47,21 +32,26 @@ function ItemCarousel() {
   const prev = () => {
     carouselRef.current.prev();
   };
+
   const uploadButton = (
     <CardCustom2 className="w-full h-full">
       {loading ? (
         <LoadingOutlined />
       ) : (
-        <Image
-          src={Plus}
-          alt="plus"
-          width={60}
-          height={60}
-          className="!text-6xl"
-        />
+        <div className="flex flex-col items-center">
+          <Image
+            src={Plus}
+            alt="plus"
+            width={60}
+            height={60}
+            className="!text-6xl"
+          />
+          <span className="mt-2">{`Add ${type}`}</span>
+        </div>
       )}
     </CardCustom2>
   );
+
   const beforeUpload = (file: FileType) => {
     const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
     if (!isJpgOrPng) {
@@ -73,23 +63,32 @@ function ItemCarousel() {
     }
     return isJpgOrPng && isLt2M;
   };
+
+  const handleChange: UploadProps["onChange"] = async (info) => {
+    if (info.file.status === "uploading") {
+      setLoading(true);
+      return;
+    }
+    if (info.file.status === "done") {
+      setLoading(false);
+      if (onUpload && info.file.originFileObj) {
+        await onUpload(type, info.file.originFileObj);
+      }
+    }
+  };
+
   return (
     <div className="item-carousel flex flex-1 gap-14">
       <LeftOutlined className="!text-4xl" onClick={prev} />
       <Upload
         name="avatar"
         listType="picture-card"
-        className="avatar-uploader "
+        className="avatar-uploader"
         showUploadList={false}
-        action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
         beforeUpload={beforeUpload}
-        // onChange={handleChange}
+        onChange={handleChange}
       >
-        {imageUrl ? (
-          <img src={imageUrl} alt="avatar" style={{ width: "100%" }} />
-        ) : (
-          uploadButton
-        )}
+        {uploadButton}
       </Upload>
       <Carousel
         infinite
@@ -99,14 +98,15 @@ function ItemCarousel() {
         className="!w-[900px] !h-[179px]"
         ref={carouselRef}
       >
-        {data.map((item, index) => {
+        {items.map((item, index) => {
           return (
             <CardCustom
-              cardSrc={U1}
-              className="w-[179px] h-[179px] "
+              key={`${item.imageAlt}-${index}`}
+              cardSrc={item.imageSrc}
+              cardAlt={item.imageAlt}
+              className="w-[179px] h-[179px]"
               cardWidth={100}
               cardHeight={100}
-              key={index}
             />
           );
         })}

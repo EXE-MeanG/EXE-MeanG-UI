@@ -1,6 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  forwardRef,
+  useImperativeHandle,
+} from "react";
 import { ScheduleXCalendar } from "@schedule-x/react";
 import { createCalendar, createViewWeek } from "@schedule-x/calendar";
 import { createEventsServicePlugin } from "@schedule-x/events-service";
@@ -23,9 +29,16 @@ function generateCustomContent(event: any) {
     "HH:mm"
   )}
       </div>
-      <img src="${
-        event.image
-      }" style="width: 100%; height: 100px; border-radius: 4px; object-fit: cover; margin-top: 4px" />
+      ${
+        event.location
+          ? `<div style="font-size: 10px">${event.location}</div>`
+          : ""
+      }
+      ${
+        event.description
+          ? `<div style="font-size: 10px">${event.description}</div>`
+          : ""
+      }
     </div>
   `;
   return {
@@ -33,66 +46,82 @@ function generateCustomContent(event: any) {
   };
 }
 
-function CalendarApp() {
+interface CalendarEvent {
+  id: string;
+  title: string;
+  start: string;
+  end: string;
+  location?: string;
+  description?: string;
+  _customContent?: any;
+}
+
+const CalendarApp = forwardRef((props, ref) => {
   const calendarRef = useRef<HTMLDivElement>(null);
   const { selectedDate } = useDateStore();
+  const [calendar, setCalendar] = useState<any>(null);
+  const [eventsPlugin, setEventsPlugin] = useState<any>(null);
 
   const [modalVisible, setModalVisible] = useState(false);
-  const [selectedEvent, setSelectedEvent] = useState<any>(null);
+  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(
+    null
+  );
 
-  const [events, setEvents] = useState([
-    {
-      id: "1",
-      title: "Event 1",
-      start: "2025-05-09 21:05",
-      end: "2025-05-09 22:35",
-      image: "https://azpet.com.vn/wp-content/uploads/2019/01/pomeranian.jpg",
-    },
-  ]);
+  const handleCreateEvent = (eventData: Omit<CalendarEvent, "id">) => {
+    const newEvent: CalendarEvent = {
+      ...eventData,
+      id: Math.random().toString(36).substr(2, 9),
+      _customContent: generateCustomContent({
+        ...eventData,
+        id: Math.random().toString(36).substr(2, 9),
+      }),
+    };
 
-  const enhancedEvents = events.map((e) => ({
-    ...e,
-    _customContent: generateCustomContent(e),
+    if (eventsPlugin) {
+      eventsPlugin.add(newEvent);
+    }
+  };
+
+  useImperativeHandle(ref, () => ({
+    handleCreateEvent,
   }));
 
-  const eventsService = createEventsServicePlugin();
-  const calendarControls = createCalendarControlsPlugin();
-
-  const calendar = createCalendar({
-    locale: "vi-VN",
-    views: [createViewWeek()],
-    events: enhancedEvents,
-    plugins: [
-      eventsService,
-      createDragAndDropPlugin(),
-      createCurrentTimePlugin(),
-      calendarControls,
-    ],
-    callbacks: {
-      onRender: () => {
-        eventsService.getAll();
-      },
-      onEventClick: (event) => {
-        setSelectedEvent(event);
-        setModalVisible(true);
-      },
-      onEventUpdate: (updatedEvent) => {
-        setEvents((prevEvents) =>
-          prevEvents.map((event) =>
-            event.id === updatedEvent.id
-              ? {
-                  ...event,
-                  start: updatedEvent.start,
-                  end: updatedEvent.end,
-                }
-              : event
-          )
-        );
-      },
-    },
-  });
-
   useEffect(() => {
+    const eventsService = createEventsServicePlugin();
+    const calendarControls = createCalendarControlsPlugin();
+
+    const calendarInstance = createCalendar({
+      locale: "vi-VN",
+      views: [createViewWeek()],
+      plugins: [
+        eventsService,
+        createDragAndDropPlugin(),
+        createCurrentTimePlugin(),
+        calendarControls,
+      ],
+      callbacks: {
+        onEventClick: (event: any) => {
+          setSelectedEvent({
+            id: event.id.toString(),
+            title: event.title,
+            start: event.start,
+            end: event.end,
+            location: event.location,
+            description: event.description,
+          });
+          setModalVisible(true);
+        },
+        onEventUpdate: (updatedEvent: any) => {
+          if (eventsPlugin) {
+            eventsPlugin.update(updatedEvent);
+          }
+        },
+      },
+    });
+
+    setCalendar(calendarInstance);
+    setEventsPlugin(eventsService);
+
     if (selectedDate) {
       calendarControls.setDate(selectedDate);
     }
@@ -102,7 +131,7 @@ function CalendarApp() {
     <>
       <div className="calendar-container" ref={calendarRef}>
         <div className="w-full h-full">
-          <ScheduleXCalendar calendarApp={calendar} />
+          {calendar && <ScheduleXCalendar calendarApp={calendar} />}
         </div>
       </div>
 
@@ -118,19 +147,26 @@ function CalendarApp() {
             <p>
               <strong>Thời gian:</strong>{" "}
               {dayjs(selectedEvent.start).format("HH:mm")} -{" "}
-              {dayjs(selectedEvent.end).format("HH:mm")}
+              {dayjs(selectedEvent.end).format("HH:mm")}{" "}
               {dayjs(selectedEvent.end).format("DD/MM/YYYY")}
             </p>
-            <img
-              src={selectedEvent.image}
-              alt="Event"
-              style={{ width: "100%", borderRadius: 6, objectFit: "cover" }}
-            />
+            {selectedEvent.location && (
+              <p>
+                <strong>Địa điểm:</strong> {selectedEvent.location}
+              </p>
+            )}
+            {selectedEvent.description && (
+              <p>
+                <strong>Mô tả:</strong> {selectedEvent.description}
+              </p>
+            )}
           </div>
         )}
       </Modal>
     </>
   );
-}
+});
+
+CalendarApp.displayName = "CalendarApp";
 
 export default CalendarApp;

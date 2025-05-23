@@ -3,92 +3,147 @@ import Header from "@/src/components/layouts/Header";
 import CardCustom from "@/src/components/shared/Card/cardCustom";
 import TypographyCustom from "@/src/components/shared/Typography/TypographyCustom";
 import Model1 from "@/src/assets/model/model1.png";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ItemCarousel from "@/src/components/item-carousel";
 import ButtonDiscCustom from "@/src/components/shared/ButtonDIsc/discCustom";
 import Image from "next/image";
 import Plus from "@/src/assets/icons/plus.png";
 import ModalEvent from "@/src/components/shared/ModalEvent/modalEvent";
 import InputCustom2 from "@/src/components/shared/Input/InputCustom2";
-import { Col, Row } from "antd";
+import { Col, Row, message } from "antd";
 import OutfitDump from "@/src/assets/outfit/o1.png";
-export default function Wardrobe() {
-  const dumpData = {
-    uppers: [
-      {
-        imageSrc: "@/src/assets/upper/u1.png",
-        imageAlt: "u1",
-      },
-      {
-        imageSrc: "@/src/assets/upper/u2.png",
-        imageAlt: "u2",
-      },
-      {
-        imageSrc: "@/src/assets/upper/u3.png",
-        imageAlt: "u3",
-      },
-      {
-        imageSrc: "@/src/assets/upper/u4.png",
-        imageAlt: "u4",
-      },
-      {
-        imageSrc: "@/src/assets/upper/u5.png",
-        imageAlt: "u5",
-      },
-    ],
-    downers: [
-      {
-        imageSrc: "@/src/assets/downer/d1.png",
-        imageAlt: "d1",
-      },
-      {
-        imageSrc: "@/src/assets/downer/d2.png",
-        imageAlt: "d2",
-      },
-      {
-        imageSrc: "@/src/assets/downer/d3.png",
-        imageAlt: "d3",
-      },
-      {
-        imageSrc: "@/src/assets/downer/d4.png",
-        imageAlt: "d4",
-      },
-      {
-        imageSrc: "@/src/assets/downer/d5.png",
-        imageAlt: "d5",
-      },
-    ],
-    ass: [
-      {
-        imageSrc: "@/src/assets/ass/a1.png",
-        imageAlt: "a1",
-      },
-      {
-        imageSrc: "@/src/assets/ass/a2.png",
-        imageAlt: "a2",
-      },
-      {
-        imageSrc: "@/src/assets/ass/a3.png",
-        imageAlt: "a3",
-      },
-      {
-        imageSrc: "@/src/assets/ass/a4.png",
-        imageAlt: "a4",
-      },
-      {
-        imageSrc: "@/src/assets/ass/a5.png",
-        imageAlt: "a5",
-      },
-    ],
-  };
+import { uploadApi, CategoryEnum } from "@/src/apis/upload.api";
+import { getUserItems } from "@/src/services/cloths";
 
+interface ApiItem {
+  _id: string;
+  user: string;
+  name: string;
+  category_enum: "shirt" | "pants" | "shoes";
+  imageLink: string;
+  outfit: any[];
+  is_favorite: boolean;
+  create_at: string;
+  update_at: string;
+  __v: number;
+}
+
+interface ApiResponse {
+  httpStatusCode: number;
+  data: ApiItem[];
+}
+
+interface CarouselItem {
+  imageSrc: string;
+  imageAlt: string;
+}
+
+interface CarouselItems {
+  uppers: CarouselItem[];
+  downers: CarouselItem[];
+  ass: CarouselItem[];
+}
+
+// Add type for getUserItems
+type GetUserItemsFunction = () => Promise<ApiResponse>;
+const getUserItemsTyped: GetUserItemsFunction = getUserItems;
+
+export default function Wardrobe() {
   const [isOpen, setIsOpen] = useState(false);
+  const [carouselItems, setCarouselItems] = useState<CarouselItems>({
+    uppers: [],
+    downers: [],
+    ass: [],
+  });
+
+  useEffect(() => {
+    const fetchItems = async () => {
+      const apiData: ApiResponse = await getUserItemsTyped();
+      const transformedData: CarouselItems = {
+        uppers: (apiData.data || [])
+          .filter((item) => item.category_enum === "shirt")
+          .map((item) => ({
+            imageSrc: item.imageLink,
+            imageAlt: item.name,
+          })),
+        downers: (apiData.data || [])
+          .filter((item) => item.category_enum === "pants")
+          .map((item) => ({
+            imageSrc: item.imageLink,
+            imageAlt: item.name,
+          })),
+        ass: (apiData.data || [])
+          .filter((item) => item.category_enum === "shoes")
+          .map((item) => ({
+            imageSrc: item.imageLink,
+            imageAlt: item.name,
+          })),
+      };
+      setCarouselItems(transformedData);
+    };
+
+    fetchItems();
+  }, []); // Empty dependency array means this runs once on mount
+
   const handleClose = () => {
     setIsOpen(false);
   };
   const handleOpen = () => {
     setIsOpen(true);
   };
+
+  const handleUpload = async (type: string, file: File) => {
+    try {
+      // Convert type string to CategoryEnum
+      const categoryMap: { [key: string]: CategoryEnum } = {
+        upper: "shirt",
+        downer: "pants",
+        accessories: "accessory",
+      };
+
+      const categoryEnum = categoryMap[type];
+      if (!categoryEnum) {
+        throw new Error("Invalid category type");
+      }
+
+      const result = await uploadApi.uploadItemImage({
+        file,
+        name: file.name.split(".")[0],
+        categoryEnum,
+      });
+
+      // Create a URL for the uploaded file
+      const imageUrl = URL.createObjectURL(file);
+
+      // Update the carousel items based on type
+      setCarouselItems((prev) => {
+        const typeMap: { [key: string]: keyof typeof prev } = {
+          upper: "uppers",
+          downer: "downers",
+          accessories: "ass",
+        };
+
+        const key = typeMap[type];
+        return {
+          ...prev,
+          [key]: [
+            ...prev[key],
+            {
+              imageSrc: imageUrl,
+              imageAlt: file.name,
+            },
+          ],
+        };
+      });
+
+      message.success(`${type} uploaded successfully`);
+      return result;
+    } catch (error) {
+      message.error("Failed to upload image");
+      console.error("Upload error:", error);
+    }
+  };
+
   return (
     <div className="wardrobe min-h-screen w-100vw  ">
       <section className="bg-hero-pattern bg-cover bg-center">
@@ -116,9 +171,21 @@ export default function Wardrobe() {
               <ModalEvent isOpen={isOpen} handleCancle={handleClose} />
             </div>
             <div className="wardrobe_content__container___items flex flex-col gap-10 ">
-              <ItemCarousel />
-              <ItemCarousel />
-              <ItemCarousel />
+              <ItemCarousel
+                type="upper"
+                items={carouselItems.uppers}
+                onUpload={handleUpload}
+              />
+              <ItemCarousel
+                type="downer"
+                items={carouselItems.downers}
+                onUpload={handleUpload}
+              />
+              <ItemCarousel
+                type="accessories"
+                items={carouselItems.ass}
+                onUpload={handleUpload}
+              />
             </div>
           </div>
         </div>

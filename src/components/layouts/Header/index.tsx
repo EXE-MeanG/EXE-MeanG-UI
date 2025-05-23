@@ -4,10 +4,17 @@ import Image from "next/image";
 import Link from "next/link";
 import Logo from "@/src/assets/logos/main-logo.png";
 import { useEffect, useState } from "react";
-import { UserOutlined } from "@ant-design/icons";
-import { MenuProps } from "antd";
+import {
+  UserOutlined,
+  LogoutOutlined,
+  ProfileOutlined,
+} from "@ant-design/icons";
+import { Dropdown, MenuProps, message } from "antd";
+import { useRouter } from "next/navigation";
+
 const Header = () => {
   const [userName, setUserName] = useState("");
+  const router = useRouter();
 
   useEffect(() => {
     const storeUserName = localStorage.getItem("auth-storage");
@@ -17,16 +24,29 @@ const Header = () => {
       setUserName(name);
     }
   }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("auth-storage");
+    setUserName("");
+    message.success("Đăng xuất thành công");
+    router.push("/login");
+  };
+
   const items: MenuProps["items"] = [
     {
-      key: "1",
-      label: <Link href={"/"}>Cài đặt tài khoảng</Link>,
+      key: "profile",
+      icon: <ProfileOutlined />,
+      label: "Hồ sơ cá nhân",
+      onClick: () => router.push("/profile"),
     },
     {
-      key: "2",
-      label: <Link href={"/"}>Đăng Xuất</Link>,
+      key: "logout",
+      icon: <LogoutOutlined />,
+      label: "Đăng xuất",
+      onClick: handleLogout,
     },
   ];
+
   return (
     <header className="w-full h-16 flex items-center justify-between px-8 shadow-2xl bg-transparent ">
       {/* Logo */}
@@ -51,19 +71,19 @@ const Header = () => {
           Trang chủ
         </Link>
         <Link
-          href="/about"
+          href="/profile"
           className="text-secondary not-italic text-xl font-semibold hover:text-white"
         >
           Hồ Sơ Cá Nhân
         </Link>
         <Link
-          href="/services"
+          href="/wardrobe"
           className="text-secondary not-italic text-xl font-semibold hover:text-white"
         >
           Tủ Đồ
         </Link>
         <Link
-          href="/contact"
+          href="/events"
           className="text-secondary not-italic text-xl font-semibold hover:text-white"
         >
           Lịch Trình
@@ -72,10 +92,12 @@ const Header = () => {
 
       {/* Auth Buttons */}
       {userName ? (
-        <div className="welcome-text text-secondary font-semibold text-xl flex gap-4 ">
-          <UserOutlined />
-          <span>Xin chào {userName}</span>
-        </div>
+        <Dropdown menu={{ items }} placement="bottomRight" trigger={["hover"]}>
+          <div className="welcome-text text-secondary font-semibold text-xl flex gap-4 items-center cursor-pointer hover:text-white">
+            <UserOutlined />
+            <span>Xin chào {userName}</span>
+          </div>
+        </Dropdown>
       ) : (
         <div className="flex gap-4">
           <Link

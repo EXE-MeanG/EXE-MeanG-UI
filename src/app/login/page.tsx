@@ -6,7 +6,7 @@ import InputCustom from "@/src/components/shared/Input/InputCustom";
 import InputPasswordCustom from "@/src/components/shared/Input/InputPasswordCustom";
 import ButtonCustom from "@/src/components/shared/Button/ButtonCustom";
 import Spakle from "@/src/assets/images/star.png";
-import { Checkbox, Divider, Form, FormProps } from "antd";
+import { Checkbox, Divider, Form, FormProps, message } from "antd";
 import {
   GoogleOutlined,
   FacebookFilled,
@@ -16,12 +16,15 @@ import { login } from "@/src/services/auth";
 import { useAuthStore } from "@/src/stores/authStore";
 import { useState } from "react";
 import { notFound, useRouter } from "next/navigation";
+import "./style.css";
+import Link from "next/link";
 type FieldType = {
   email?: string;
   password?: string;
   remember?: string;
 };
 export default function Login() {
+  const [form] = Form.useForm();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
@@ -33,8 +36,12 @@ export default function Login() {
       });
       setLoading(false);
       router.push("/");
-    } catch (error) {
+    } catch (error: any) {
       router.push("/not-found");
+
+      form.setFieldsValue({ password: "" });
+      message.error(error.message);
+      setLoading(false);
     }
   };
   const onFinishFailed: FormProps<FieldType>["onFinishFailed"] = (
@@ -43,7 +50,7 @@ export default function Login() {
     console.log("Failed:", errorInfo);
   };
   return (
-    <div className="min-h-screen w-full bg-hero-pattern bg-cover bg-center flex flex-col items-center justify-center px-4">
+    <div className="login-screen min-h-screen w-full bg-hero-pattern bg-cover bg-center flex flex-col items-center justify-center px-4">
       {/* Logo */}
       <div className="p-6 absolute top-0 left-0 right-0 ">
         <Image src={Logo} alt="MeanG" width={200} height={90} />
@@ -51,9 +58,11 @@ export default function Login() {
 
       {/* Login box */}
       <Form
+        form={form}
         initialValues={{ remember: true }}
         className="!w-full flex justify-center"
         onFinish={onFinish}
+        onFinishFailed={onFinishFailed}
       >
         <div className="login-content w-[50%] h-[53%] bg-white p-8 rounded-xl shadow-md flex flex-col items-center">
           <h1 className="text-2xl font-semibold mb-6">Đăng nhập</h1>
@@ -134,9 +143,12 @@ export default function Login() {
           {/* Đăng ký */}
           <p className="text-sm text-quaternary">
             Bạn không có tài khoản?{" "}
-            <a href="#" className="text-primary font-medium hover:underline">
+            <Link
+              href="/register"
+              className="text-primary font-medium hover:underline"
+            >
               Đăng ký
-            </a>
+            </Link>
           </p>
         </div>
       </Form>

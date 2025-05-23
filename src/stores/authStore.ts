@@ -24,6 +24,7 @@ const storage =
     : undefined;
 
 export const useAuthStore = create<AuthState>()(
+  // đồng bộ localstorage và zustand
   persist(
     (set) => ({
       user: null,

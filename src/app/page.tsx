@@ -22,7 +22,12 @@ import Spakle from "@/src/assets/images/star.png";
 import CalendarAnimation from "../components/shared/CalendarAnimated";
 import Link from "next/link";
 import Footer from "../components/layouts/Footer";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { useAuthStore } from "../stores/authStore";
 export default function Home() {
+  const router = useRouter();
+  const user = useAuthStore.getState().user;
   return (
     <div className="h-[4000px]">
       <section className="h-[800px] max-w-[100vw] bg-hero-pattern bg-cover bg-center">
@@ -40,7 +45,16 @@ export default function Home() {
               Giúp bạn kết hợp và tạo nên phong cách cá nhân của mình..
             </p>
             <div className="sparkle relative">
-              <ButtonCustom className="font-semibold text-4xl w-[328px] h-[79px] ">
+              <ButtonCustom
+                className="font-semibold text-4xl w-[328px] h-[79px] "
+                onClick={() => {
+                  if (!user) {
+                    router.push("/login");
+                  } else {
+                    router.push("/wardrobe");
+                  }
+                }}
+              >
                 Try MEANG
               </ButtonCustom>
               <Image

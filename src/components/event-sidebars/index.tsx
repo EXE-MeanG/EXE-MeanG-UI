@@ -7,11 +7,20 @@ import {
 import React, { useState } from "react";
 import ButtonDiscCustom from "../shared/ButtonDIsc/discCustom";
 import CalendarMini from "../shared/CalendarMini";
-import { Form } from "antd";
 import "./style.css";
 import ModalEvent from "../shared/ModalEvent/modalEvent";
 
-function EventSidebars() {
+interface EventSidebarsProps {
+  onEventCreate?: (eventData: {
+    title: string;
+    start: string;
+    end: string;
+    location?: string;
+    description?: string;
+  }) => void;
+}
+
+function EventSidebars({ onEventCreate }: EventSidebarsProps) {
   const [isOpen, setIsOpen] = useState(false);
   const handleClose = () => {
     setIsOpen(false);
@@ -19,6 +28,7 @@ function EventSidebars() {
   const handleOpen = () => {
     setIsOpen(true);
   };
+
   return (
     <div className="event-sidebars ">
       <div className="event-sidebars_header text-xl flex gap-4 p-4 font-semibold">
@@ -36,7 +46,11 @@ function EventSidebars() {
       </div>
       <div className="event-sidebars_calendar p-10">
         <CalendarMini />
-        <ModalEvent isOpen={isOpen} handleCancle={handleClose} />
+        <ModalEvent
+          isOpen={isOpen}
+          handleCancle={handleClose}
+          onEventCreate={onEventCreate}
+        />
       </div>
     </div>
   );

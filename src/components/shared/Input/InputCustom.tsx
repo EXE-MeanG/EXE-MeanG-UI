@@ -11,6 +11,8 @@ interface InputCustomProps extends InputProps {
 }
 
 const InputCustom: React.FC<InputCustomProps> = ({
+  maxLength,
+  type,
   value,
   placeholder,
   onChange,
@@ -23,6 +25,9 @@ const InputCustom: React.FC<InputCustomProps> = ({
     >
       <div className="bg-primary h-full w-full rounded-md hover:opacity-90">
         <Input
+          min={0}
+          maxLength={maxLength}
+          type={type}
           value={value}
           onChange={onChange}
           placeholder={placeholder}

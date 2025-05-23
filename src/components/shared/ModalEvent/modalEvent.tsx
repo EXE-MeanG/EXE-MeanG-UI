@@ -6,31 +6,54 @@ import Clock from "@/src/assets/icons/clock.png";
 import Environment from "@/src/assets/icons/environment.png";
 import Description from "@/src/assets/icons/description.png";
 import "./modalEvent.css";
+import dayjs from "dayjs";
 
 interface ModalEvent {
   isOpen: boolean;
   loading?: boolean;
   handleCancle: () => void;
+  onEventCreate?: (eventData: {
+    title: string;
+    start: string;
+    end: string;
+    location?: string;
+    description?: string;
+  }) => void;
 }
-function ModalEvent({ isOpen, handleCancle }: ModalEvent) {
-  const [title, setTitle] = useState("");
+
+function ModalEvent({ isOpen, handleCancle, onEventCreate }: ModalEvent) {
   const [form] = Form.useForm();
+
   const handleSave = () => {
     form
       .validateFields()
       .then((values) => {
-        console.log("Đã lưu", values);
+        if (onEventCreate) {
+          const eventData = {
+            title: values.title,
+            start: dayjs(values.startTime).format("YYYY-MM-DD HH:mm"),
+            end: dayjs(values.endTime).format("YYYY-MM-DD HH:mm"),
+            location: values.location,
+            description: values.description,
+          };
+          onEventCreate(eventData);
+        }
         handleCancle();
+        form.resetFields();
       })
       .catch((errorInfo) => {
         console.log("Có lỗi", errorInfo);
       });
   };
+
   return (
     <div className="modal-event">
       <Modal
         open={isOpen}
-        onCancel={() => handleCancle()}
+        onCancel={() => {
+          handleCancle();
+          form.resetFields();
+        }}
         footer={null}
         closable
         centered
@@ -56,8 +79,8 @@ function ModalEvent({ isOpen, handleCancle }: ModalEvent) {
           </Form.Item>
 
           <Form.Item
-            name="time"
-            rules={[{ required: true, message: "Chọn thời gian" }]}
+            name="startTime"
+            rules={[{ required: true, message: "Chọn thời gian bắt đầu" }]}
             className="input-hover-animate"
           >
             <DatePicker
@@ -69,6 +92,42 @@ function ModalEvent({ isOpen, handleCancle }: ModalEvent) {
                 </span>
               }
               variant="borderless"
+              placeholder="Thời gian bắt đầu"
+              className="modal-event__modal___input____date w-full"
+            />
+          </Form.Item>
+
+          <Form.Item
+            name="endTime"
+            rules={[
+              { required: true, message: "Chọn thời gian kết thúc" },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (
+                    !value ||
+                    !getFieldValue("startTime") ||
+                    dayjs(value).isAfter(getFieldValue("startTime"))
+                  ) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject(
+                    new Error("Thời gian kết thúc phải sau thời gian bắt đầu")
+                  );
+                },
+              }),
+            ]}
+            className="input-hover-animate"
+          >
+            <DatePicker
+              showTime
+              format="dddd, DD [Tháng] MM HH:mm"
+              prefix={
+                <span className="icon-gradient">
+                  <Image src={Clock} alt="clockicon" />
+                </span>
+              }
+              variant="borderless"
+              placeholder="Thời gian kết thúc"
               className="modal-event__modal___input____date w-full"
             />
           </Form.Item>

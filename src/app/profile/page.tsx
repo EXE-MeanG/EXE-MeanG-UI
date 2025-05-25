@@ -2,14 +2,19 @@
 import Header from "@/src/components/layouts/Header";
 import ProfileForm from "@/src/components/profile-form";
 import Sidebar from "@/src/components/profile-sidebars";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./style.css";
 import { Button, Modal } from "antd";
 import Notification from "@/src/components/profile-notification";
 import Security from "@/src/components/profile-security";
+import { useRouter } from "next/navigation";
 export default function Profile() {
   const [selected, setSelected] = useState("profile");
-
+  const router = useRouter();
+  useEffect(() => {
+    const token = localStorage.getItem("auth-storage");
+    if (!token) router.push("/login");
+  }, []);
   return (
     <div className=" min-h-screen w-100vw bg-hero-pattern bg-cover bg-center ">
       <Header />

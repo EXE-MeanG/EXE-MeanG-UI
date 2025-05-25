@@ -2,11 +2,12 @@
 import CalendarApp from "@/src/components/calendar";
 import EventSidebars from "@/src/components/event-sidebars";
 import Header from "@/src/components/layouts/Header";
-import React, { useRef } from "react";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useRef } from "react";
 
 function Events() {
   const calendarRef = useRef<any>();
-
+  const router = useRouter();
   const handleEventCreate = (eventData: {
     title: string;
     start: string;
@@ -19,6 +20,10 @@ function Events() {
     }
   };
 
+  useEffect(() => {
+    const token = localStorage.getItem("auth-storage");
+    if (!token) router.push("/login");
+  }, []);
   return (
     <div className="min-h-screen w-100vw bg-hero-pattern bg-cover bg-center ">
       <Header />

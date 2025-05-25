@@ -14,6 +14,7 @@ import { Col, Row, message } from "antd";
 import OutfitDump from "@/src/assets/outfit/o1.png";
 import { uploadApi, CategoryEnum } from "@/src/apis/upload.api";
 import { getUserItems } from "@/src/services/cloths";
+import { useRouter } from "next/navigation";
 
 interface ApiItem {
   _id: string;
@@ -49,13 +50,18 @@ type GetUserItemsFunction = () => Promise<ApiResponse>;
 const getUserItemsTyped: GetUserItemsFunction = getUserItems;
 
 export default function Wardrobe() {
+  const router = useRouter();
+
   const [isOpen, setIsOpen] = useState(false);
   const [carouselItems, setCarouselItems] = useState<CarouselItems>({
     uppers: [],
     downers: [],
     ass: [],
   });
-
+  useEffect(() => {
+    const token = localStorage.getItem("auth-storage");
+    if (!token) router.push("/login");
+  }, []);
   useEffect(() => {
     const fetchItems = async () => {
       const apiData: ApiResponse = await getUserItemsTyped();

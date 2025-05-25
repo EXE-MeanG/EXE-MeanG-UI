@@ -52,7 +52,10 @@ export default function Login() {
   return (
     <div className="login-screen min-h-screen w-full bg-hero-pattern bg-cover bg-center flex flex-col items-center justify-center px-4">
       {/* Logo */}
-      <div className="p-6 absolute top-0 left-0 right-0 ">
+      <div
+        className="p-6 absolute top-0 left-0 right-0 hover:cursor-pointer"
+        onClick={() => router.push("/")}
+      >
         <Image src={Logo} alt="MeanG" width={200} height={90} />
       </div>
 

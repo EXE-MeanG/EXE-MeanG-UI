@@ -27,6 +27,7 @@ const ButtonCustom: React.FC<ButtonCustomProps> = ({
       onClick={onClick}
       loading={loading}
       htmlType={htmlType}
+      disabled={disabled}
     >
       <div className="stroke-wrapper z-10 w-full h-full absolute overflow-hidden">
         <div

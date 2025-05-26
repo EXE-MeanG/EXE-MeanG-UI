@@ -4,3 +4,12 @@
     height: 179px !important;
   }
 }
+.modal-custom {
+  width: 40vw !important;
+  height: 500px !important;
+}
+.modal-option__radio {
+  .ant-radio-label {
+    width: 100% !important;
+  }
+}

@@ -98,7 +98,7 @@ export default function Wardrobe() {
     setIsOpen(true);
   };
 
-  const handleUpload = async (type: string, file: File) => {
+  const handleUpload = async (type: string, file?: File, imageUrl?: string) => {
     try {
       // Convert type string to CategoryEnum
       const categoryMap: { [key: string]: CategoryEnum } = {
@@ -114,14 +114,11 @@ export default function Wardrobe() {
 
       const result = await uploadApi.uploadItemImage({
         file,
-        name: file.name.split(".")[0],
+        name: file ? file.name : "Default Name",
+        imageUrl: imageUrl || "",
         categoryEnum,
       });
 
-      // Create a URL for the uploaded file
-      const imageUrl = URL.createObjectURL(file);
-
-      // Update the carousel items based on type
       setCarouselItems((prev) => {
         const typeMap: { [key: string]: keyof typeof prev } = {
           upper: "uppers",
@@ -135,8 +132,8 @@ export default function Wardrobe() {
           [key]: [
             ...prev[key],
             {
-              imageSrc: imageUrl,
-              imageAlt: file.name,
+              imageSrc: file ? URL.createObjectURL(file) : imageUrl,
+              imageAlt: file ? file.name : "Uploaded Image",
             },
           ],
         };
@@ -159,7 +156,7 @@ export default function Wardrobe() {
           <div className="wardrobe_content__container flex justify-between items-start">
             <div className="wardrobe_content__container___model flex-1 flex flex-col items-center justify-center gap-2">
               <CardCustom
-                cardSrc={Model1}
+                cardSrc={Model1.src}
                 cardWidth={411}
                 cardHeight={617}
                 className="w-[411px] h-[617px]"
@@ -203,7 +200,7 @@ export default function Wardrobe() {
           <div className=" w-full wardrobe_chat__container my-20 flex justify-between items-start gap-40 ">
             <div className="wardrobe_chat__container___model flex flex-col items-center justify-center gap-2">
               <CardCustom
-                cardSrc={Model1}
+                cardSrc={Model1.src}
                 cardWidth={411}
                 cardHeight={617}
                 className="w-[411px] h-[617px]"
@@ -224,7 +221,7 @@ export default function Wardrobe() {
               <Row gutter={[20, 50]}>
                 <Col span={8}>
                   <CardCustom
-                    cardSrc={OutfitDump}
+                    cardSrc={OutfitDump.src}
                     cardAlt="outfit-dump"
                     className="w-[290px] h-[290px] "
                     cardWidth={200}
@@ -233,7 +230,7 @@ export default function Wardrobe() {
                 </Col>
                 <Col span={8}>
                   <CardCustom
-                    cardSrc={OutfitDump}
+                    cardSrc={OutfitDump.src}
                     cardAlt="outfit-dump"
                     className="w-[290px] h-[290px] "
                     cardWidth={200}
@@ -242,7 +239,7 @@ export default function Wardrobe() {
                 </Col>
                 <Col span={8}>
                   <CardCustom
-                    cardSrc={OutfitDump}
+                    cardSrc={OutfitDump.src}
                     cardAlt="outfit-dump"
                     className="w-[290px] h-[290px] "
                     cardWidth={200}
@@ -251,7 +248,7 @@ export default function Wardrobe() {
                 </Col>
                 <Col span={8}>
                   <CardCustom
-                    cardSrc={OutfitDump}
+                    cardSrc={OutfitDump.src}
                     cardAlt="outfit-dump"
                     className="w-[290px] h-[290px] "
                     cardWidth={200}
@@ -260,7 +257,7 @@ export default function Wardrobe() {
                 </Col>
                 <Col span={8}>
                   <CardCustom
-                    cardSrc={OutfitDump}
+                    cardSrc={OutfitDump.src}
                     cardAlt="outfit-dump"
                     className="w-[290px] h-[290px] "
                     cardWidth={200}
@@ -269,7 +266,7 @@ export default function Wardrobe() {
                 </Col>
                 <Col span={8}>
                   <CardCustom
-                    cardSrc={OutfitDump}
+                    cardSrc={OutfitDump.src}
                     cardAlt="outfit-dump"
                     className="w-[290px] h-[290px] "
                     cardWidth={200}

@@ -1,4 +1,13 @@
-import { Carousel, GetProp, message, Upload, UploadProps } from "antd";
+import {
+  Button,
+  Carousel,
+  GetProp,
+  message,
+  Modal,
+  Radio,
+  Upload,
+  UploadProps,
+} from "antd";
 import React, { useRef, useState } from "react";
 import CardCustom2 from "../shared/Card2/cardCustom2";
 import {
@@ -6,11 +15,14 @@ import {
   LoadingOutlined,
   PlusOutlined,
   RightOutlined,
+  UploadOutlined,
 } from "@ant-design/icons";
 import "./style.css";
 import Image from "next/image";
 import CardCustom from "../shared/Card/cardCustom";
 import Plus from "@/src/assets/icons/plus.png";
+import InputCustom from "../shared/Input/InputCustom";
+import ButtonCustom from "../shared/Button/ButtonCustom";
 
 interface ItemCarouselProps {
   type: "upper" | "downer" | "accessories";
@@ -18,21 +30,24 @@ interface ItemCarouselProps {
     imageSrc: string;
     imageAlt: string;
   }>;
-  onUpload?: (type: string, file: File) => Promise<void>;
+  onUpload?: (type: string, file?: File, imageUrl?: string) => Promise<void>;
 }
 
 function ItemCarousel({ type, items, onUpload }: ItemCarouselProps) {
   type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
+  const [isOpen, setIsopen] = useState(false);
   const [loading, setLoading] = useState(false);
   const carouselRef = useRef<any>(null);
-
+  const [uploadOption, setUploadOption] = useState<"link" | "file" | null>(
+    "link"
+  );
   const next = () => {
     carouselRef.current.next();
   };
   const prev = () => {
     carouselRef.current.prev();
   };
-
+  const [linkValue, setLinkValue] = useState<string>("");
   const uploadButton = (
     <CardCustom2 className="w-full h-full">
       {loading ? (
@@ -76,20 +91,102 @@ function ItemCarousel({ type, items, onUpload }: ItemCarouselProps) {
       }
     }
   };
+  const handleuploadLink = async () => {
+    if (!linkValue) {
+      message.error("Please enter a valid link");
+      return;
+    }
+    setLoading(true);
+    try {
+      if (onUpload) {
+        await onUpload(type, undefined, linkValue);
+      }
+      setLinkValue("");
+      setIsopen(false);
+      message.success(`${type} uploaded successfully`);
+    } catch (error) {
+      message.error("Failed to upload image");
+      console.error("Upload error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="item-carousel flex flex-1 gap-14">
       <LeftOutlined className="!text-4xl" onClick={prev} />
-      <Upload
-        name="avatar"
-        listType="picture-card"
-        className="avatar-uploader"
-        showUploadList={false}
-        beforeUpload={beforeUpload}
-        onChange={handleChange}
+      <CardCustom2
+        className="w-[179px] h-[179px]"
+        onClick={() => setIsopen(true)}
       >
-        {uploadButton}
-      </Upload>
+        {loading ? (
+          <LoadingOutlined />
+        ) : (
+          <div className="flex flex-col items-center">
+            <Image
+              src={Plus}
+              alt="plus"
+              width={60}
+              height={60}
+              className="!text-6xl"
+            />
+            <span className="mt-2">{`Add ${type}`}</span>
+          </div>
+        )}
+      </CardCustom2>
+      <Modal
+        open={isOpen}
+        onCancel={() => setIsopen(false)}
+        footer={null}
+        width={600}
+        centered
+        title={"Tải lên hình ảnh của bạn bằng 1 trong 2 cách sau"}
+        className="modal-custom"
+      >
+        <Radio.Group
+          onChange={(e) => setUploadOption(e.target.value)}
+          value={uploadOption}
+          className="modal-option w-full flex flex-col gap-4"
+        >
+          <Radio value="link" className="modal-option__radio w-full">
+            <div className="option w-full flex gap-3 items-center justify-center">
+              <InputCustom
+                disabled={uploadOption !== "link"}
+                className="w-full h-[56px]"
+                placeholder="Enter the link"
+                onChange={(e) => setLinkValue(e.target.value)}
+              />
+              <ButtonCustom
+                disabled={uploadOption !== "link"}
+                className="!w-28 !h-10 shadow-md shadow-black  rounded-[10px]"
+                onClick={handleuploadLink}
+              >
+                Xác nhận
+              </ButtonCustom>
+            </div>
+          </Radio>
+
+          <Radio value="file">
+            <div className="option">
+              <Upload
+                name="avatar"
+                className="avatar-uploader"
+                showUploadList={false}
+                beforeUpload={beforeUpload}
+                onChange={handleChange}
+                disabled={uploadOption !== "file"}
+              >
+                <Button
+                  disabled={uploadOption !== "file"}
+                  icon={<UploadOutlined />}
+                >
+                  Click to Upload
+                </Button>
+              </Upload>
+            </div>
+          </Radio>
+        </Radio.Group>
+      </Modal>
       <Carousel
         infinite
         dots={false}

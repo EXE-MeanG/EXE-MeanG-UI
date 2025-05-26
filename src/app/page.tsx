@@ -150,7 +150,7 @@ export default function Home() {
               }}
             >
               <CardCustom
-                cardSrc={Image1}
+                cardSrc={Image1.src}
                 cardAlt="image1"
                 cardWidth={331}
                 cardHeight={436}
@@ -169,7 +169,7 @@ export default function Home() {
               }}
             >
               <CardCustom
-                cardSrc={Image2}
+                cardSrc={Image2.src}
                 cardAlt="image1"
                 cardWidth={331}
                 cardHeight={436}
@@ -190,7 +190,7 @@ export default function Home() {
               }}
             >
               <CardCustom
-                cardSrc={Image3}
+                cardSrc={Image3.src}
                 cardAlt="image1"
                 cardWidth={331}
                 cardHeight={436}
@@ -270,7 +270,7 @@ export default function Home() {
         <TypographyCustom text="VỀ CHÚNG TÔI" size={80} />
         <div className="about-us-card relative flex items-center justify-center gap-32">
           <CardCustom
-            cardSrc={Team}
+            cardSrc={Team.src}
             cardAlt="image1"
             cardWidth={1450}
             cardHeight={782}

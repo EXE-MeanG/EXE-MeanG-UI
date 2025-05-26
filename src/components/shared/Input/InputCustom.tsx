@@ -17,6 +17,7 @@ const InputCustom: React.FC<InputCustomProps> = ({
   placeholder,
   onChange,
   className,
+  disabled,
   ...props
 }) => {
   return (
@@ -26,6 +27,7 @@ const InputCustom: React.FC<InputCustomProps> = ({
       <div className="bg-primary h-full w-full rounded-md hover:opacity-90">
         <Input
           min={0}
+          disabled={disabled}
           maxLength={maxLength}
           type={type}
           value={value}

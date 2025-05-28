@@ -10,11 +10,14 @@ import Image from "next/image";
 import Plus from "@/src/assets/icons/plus.png";
 import ModalEvent from "@/src/components/shared/ModalEvent/modalEvent";
 import InputCustom2 from "@/src/components/shared/Input/InputCustom2";
-import { Col, Row, message } from "antd";
+import { Col, GetProp, Row, Upload, UploadProps, message } from "antd";
 import OutfitDump from "@/src/assets/outfit/o1.png";
 import { uploadApi, CategoryEnum } from "@/src/apis/upload.api";
 import { getUserItems } from "@/src/services/cloths";
 import { useRouter } from "next/navigation";
+import { developmentURL } from "@/src/apis/constraints";
+import { useAuthStore } from "@/src/stores/authStore";
+import { UploadOutlined } from "@ant-design/icons";
 
 interface ApiItem {
   _id: string;
@@ -37,6 +40,7 @@ interface ApiResponse {
 interface CarouselItem {
   imageSrc: string;
   imageAlt: string;
+  id?: string;
 }
 
 interface CarouselItems {
@@ -45,14 +49,26 @@ interface CarouselItems {
   ass: CarouselItem[];
 }
 
+interface SelectedItems {
+  upper: CarouselItem | null;
+  downer: CarouselItem | null;
+  shoes: CarouselItem | null;
+}
+
 // Add type for getUserItems
 type GetUserItemsFunction = () => Promise<ApiResponse>;
 const getUserItemsTyped: GetUserItemsFunction = getUserItems;
-
+type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 export default function Wardrobe() {
+  const [generatedOutfit, setGeneratedOutfit] = useState("");
   const router = useRouter();
-
+  const token = useAuthStore.getState().accessToken;
   const [isOpen, setIsOpen] = useState(false);
+  const [selectedItems, setSelectedItems] = useState<SelectedItems>({
+    upper: null,
+    downer: null,
+    shoes: null,
+  });
   const [carouselItems, setCarouselItems] = useState<CarouselItems>({
     uppers: [],
     downers: [],
@@ -104,7 +120,7 @@ export default function Wardrobe() {
       const categoryMap: { [key: string]: CategoryEnum } = {
         upper: "shirt",
         downer: "pants",
-        accessories: "accessory",
+        shoes: "shoes",
       };
 
       const categoryEnum = categoryMap[type];
@@ -123,7 +139,7 @@ export default function Wardrobe() {
         const typeMap: { [key: string]: keyof typeof prev } = {
           upper: "uppers",
           downer: "downers",
-          accessories: "ass",
+          shoes: "ass",
         };
 
         const key = typeMap[type];
@@ -147,30 +163,119 @@ export default function Wardrobe() {
     }
   };
 
+  const handleItemSelect = (type: string, item: CarouselItem) => {
+    setSelectedItems((prev) => ({
+      ...prev,
+      [type]: item,
+    }));
+  };
+
+  const handleGenerateOutfit = async () => {
+    if (!selectedItems.upper || !selectedItems.downer || !selectedItems.shoes) {
+      message.warning("Please select one item from each category");
+      return;
+    }
+
+    try {
+      // Here you can call your API with the selected items
+      const outfitData = {
+        upperItem: selectedItems.upper,
+        downerItem: selectedItems.downer,
+        shoesItem: selectedItems.shoes,
+      };
+
+      // Call your API here
+      // const response = await yourApi.generateOutfit(outfitData);
+      message.success("Outfit generated successfully!");
+    } catch (error) {
+      message.error("Failed to generate outfit");
+      console.error("Generate outfit error:", error);
+    }
+  };
+  const beforeUpload = (file: FileType) => {
+    const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
+    if (!isJpgOrPng) {
+      message.error("You can only upload JPG/PNG file!");
+    }
+    const isLt2M = file.size / 1024 / 1024 < 2;
+    if (!isLt2M) {
+      message.error("Image must smaller than 2MB!");
+    }
+    return isJpgOrPng && isLt2M;
+  };
   return (
     <div className="wardrobe min-h-screen w-100vw  ">
       <section className="bg-hero-pattern bg-cover bg-center">
         <Header />
         <div className="wardrobe_content px-[100px] py-[50px]">
           <TypographyCustom text="MIX & MATCH" size={80} />
-          <div className="wardrobe_content__container flex justify-between items-start">
+          <div className="wardrobe_content__container flex justify-between items-start gap-11">
             <div className="wardrobe_content__container___model flex-1 flex flex-col items-center justify-center gap-2">
-              <CardCustom
-                cardSrc={Model1.src}
-                cardWidth={411}
-                cardHeight={617}
-                className="w-[411px] h-[617px]"
-              />
-              <ButtonDiscCustom onClick={handleOpen}>
-                <Image
-                  src={Plus}
-                  alt="plus"
-                  width={24}
-                  height={24}
-                  className="mr-2"
-                />{" "}
-                Đặt Lịch Hẹn
-              </ButtonDiscCustom>
+              <Upload
+                name="image"
+                action={`${developmentURL}api/v1/user/upload-body-image`}
+                headers={{
+                  Authorization: `Bearer ${token}`,
+                }}
+                beforeUpload={beforeUpload}
+                showUploadList={false}
+                onChange={(info) => {
+                  if (info.file.status !== "uploading") {
+                    console.log(info.file, info.fileList);
+                  }
+                  if (info.file.status === "done") {
+                    message.success(
+                      `${info.file.name} file uploaded successfully`
+                    );
+                  } else if (info.file.status === "error") {
+                    message.error(`${info.file.name} file upload failed.`);
+                  }
+                }}
+              >
+                <div className="relative group">
+                  <CardCustom
+                    cardSrc={Model1.src}
+                    cardWidth={411}
+                    cardHeight={617}
+                    className="w-[411px] h-[617px]"
+                  />
+                  <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <UploadOutlined className="text-4xl text-white mb-2" />
+                    <span className="text-white text-xl font-semibold">
+                      Tải lên hình ảnh của bạn
+                    </span>
+                  </div>
+                </div>
+              </Upload>
+              <div className="flex gap-4">
+                <ButtonDiscCustom onClick={handleOpen}>
+                  <Image
+                    src={Plus}
+                    alt="plus"
+                    width={24}
+                    height={24}
+                    className="mr-2"
+                  />{" "}
+                  Đặt Lịch Hẹn
+                </ButtonDiscCustom>
+                <ButtonDiscCustom
+                  onClick={handleGenerateOutfit}
+                  disabled={
+                    !selectedItems.upper ||
+                    !selectedItems.downer ||
+                    !selectedItems.shoes
+                  }
+                >
+                  <Image
+                    src={Plus}
+                    alt="plus"
+                    width={24}
+                    height={24}
+                    className="mr-2"
+                  />{" "}
+                  Generate Outfit
+                </ButtonDiscCustom>
+              </div>
               <ModalEvent isOpen={isOpen} handleCancle={handleClose} />
             </div>
             <div className="wardrobe_content__container___items flex flex-col gap-10 ">
@@ -178,16 +283,22 @@ export default function Wardrobe() {
                 type="upper"
                 items={carouselItems.uppers}
                 onUpload={handleUpload}
+                selectedItem={selectedItems.upper}
+                onSelectItem={(item) => handleItemSelect("upper", item)}
               />
               <ItemCarousel
                 type="downer"
                 items={carouselItems.downers}
                 onUpload={handleUpload}
+                selectedItem={selectedItems.downer}
+                onSelectItem={(item) => handleItemSelect("downer", item)}
               />
               <ItemCarousel
-                type="accessories"
+                type="shoes"
                 items={carouselItems.ass}
                 onUpload={handleUpload}
+                selectedItem={selectedItems.shoes}
+                onSelectItem={(item) => handleItemSelect("shoes", item)}
               />
             </div>
           </div>

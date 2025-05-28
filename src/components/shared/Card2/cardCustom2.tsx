@@ -18,7 +18,7 @@ const CardCustom2: React.FC<CardCustom2> = ({
   return (
     <div
       onClick={onClick}
-      className={`h-60 w-48 relative p-[10px] rounded-sm  overflow-hidden bg-primary-gradient main-card card-glow-border ${className} `}
+      className={`h-60 w-48 relative p-[4px] rounded-sm  overflow-hidden bg-primary-gradient main-card card-glow-border ${className} `}
     >
       <div className=" b w-full h-full rounded-sm bg-main-background "></div>
       <div className="absolute w-[98%] h-[98%] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></div>

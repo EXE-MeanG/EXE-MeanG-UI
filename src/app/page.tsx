@@ -46,7 +46,7 @@ export default function Home() {
             </p>
             <div className="sparkle relative">
               <ButtonCustom
-                className="font-semibold text-4xl w-[328px] h-[79px] "
+                className="font-semibold text-4xl w-[328px] h-[79px] shadow-md shadow-black"
                 onClick={() => {
                   if (!user) {
                     router.push("/login");

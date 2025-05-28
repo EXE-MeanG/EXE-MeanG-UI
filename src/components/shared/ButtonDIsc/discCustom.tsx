@@ -9,6 +9,7 @@ interface ButtonDiscCustomProps {
   className?: string; // custom class từ ngoài
   children: React.ReactNode;
   onClick?: () => void;
+  disabled?: boolean;
 }
 
 const ButtonDiscCustom: React.FC<ButtonDiscCustomProps> = ({
@@ -17,11 +18,15 @@ const ButtonDiscCustom: React.FC<ButtonDiscCustomProps> = ({
   className = "",
   children,
   onClick,
+  disabled = false,
 }) => {
   return (
     <button
       onClick={onClick}
-      className={`relative overflow-hidden font-medium shadow-sm flex items-center justify-center glass-background ${width} ${height} ${className}`}
+      disabled={disabled}
+      className={`relative overflow-hidden font-medium shadow-sm flex items-center justify-center glass-background ${width} ${height} ${className} ${
+        disabled ? "opacity-50 cursor-not-allowed" : ""
+      }`}
     >
       {/* Nền ánh sáng xoay */}
       <div className="absolute w-[1000px] h-[1000px] z-0 spin-light" />

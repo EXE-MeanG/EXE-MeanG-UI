@@ -16,6 +16,7 @@ import {
   PlusOutlined,
   RightOutlined,
   UploadOutlined,
+  CheckCircleFilled,
 } from "@ant-design/icons";
 import "./style.css";
 import Image from "next/image";
@@ -25,15 +26,32 @@ import InputCustom from "../shared/Input/InputCustom";
 import ButtonCustom from "../shared/Button/ButtonCustom";
 
 interface ItemCarouselProps {
-  type: "upper" | "downer" | "accessories";
+  type: "upper" | "downer" | "shoes";
   items: Array<{
     imageSrc: string;
     imageAlt: string;
+    id?: string;
   }>;
   onUpload?: (type: string, file?: File, imageUrl?: string) => Promise<void>;
+  selectedItem?: {
+    imageSrc: string;
+    imageAlt: string;
+    id?: string;
+  } | null;
+  onSelectItem?: (item: {
+    imageSrc: string;
+    imageAlt: string;
+    id?: string;
+  }) => void;
 }
 
-function ItemCarousel({ type, items, onUpload }: ItemCarouselProps) {
+function ItemCarousel({
+  type,
+  items,
+  onUpload,
+  selectedItem,
+  onSelectItem,
+}: ItemCarouselProps) {
   type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
   const [isOpen, setIsopen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -123,13 +141,7 @@ function ItemCarousel({ type, items, onUpload }: ItemCarouselProps) {
           <LoadingOutlined />
         ) : (
           <div className="flex flex-col items-center">
-            <Image
-              src={Plus}
-              alt="plus"
-              width={60}
-              height={60}
-              className="!text-6xl"
-            />
+            <Image src={Plus} alt="plus" height={60} className="!text-6xl" />
             <span className="mt-2">{`Add ${type}`}</span>
           </div>
         )}
@@ -196,15 +208,25 @@ function ItemCarousel({ type, items, onUpload }: ItemCarouselProps) {
         ref={carouselRef}
       >
         {items.map((item, index) => {
+          const isSelected = selectedItem?.imageSrc === item.imageSrc;
           return (
-            <CardCustom
-              key={`${item.imageAlt}-${index}`}
-              cardSrc={item.imageSrc}
-              cardAlt={item.imageAlt}
-              className="w-[179px] h-[179px]"
-              cardWidth={100}
-              cardHeight={100}
-            />
+            <div key={index} className="px-2 relative">
+              <CardCustom
+                cardSrc={item.imageSrc}
+                cardAlt={item.imageAlt}
+                cardWidth={100}
+                cardHeight={100}
+                className={`!w-[179px] !h-[179px] cursor-pointer transition-all ${
+                  isSelected ? "opacity-95 scale-90" : ""
+                }`}
+                onClick={() => onSelectItem?.(item)}
+              />
+              {isSelected && (
+                <div className="absolute top-2 right-11 z-20">
+                  <CheckCircleFilled className="text-2xl text-primary !text-green-500" />
+                </div>
+              )}
+            </div>
           );
         })}
       </Carousel>

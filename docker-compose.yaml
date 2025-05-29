@@ -1,0 +1,7 @@
+services:
+  app:
+    container_name: meang-ui
+    build: .
+    ports:
+      - "3000:3000"
+    restart: always

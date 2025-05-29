@@ -45,11 +45,11 @@ const AvaDiscCustom: React.FC<AvaDiscCustom> = ({
           transition: "transform 0.05s linear",
         }}
       >
-        <div className="bg-primary w-full h-full rounded-full circle-center" />
+        <div className="bg-primary w-full h-full rounded-full circle-center " />
       </div>
 
       {/* ✅ Mặt nạ trắng ở trên */}
-      <div className="absolute inset-0 rounded-full bg-white opacity-60 pointer-events-none z-10" />
+      <div className="absolute inset-0 rounded-full  bg-white opacity-60 pointer-events-none z-10" />
 
       {/* Icon trung tâm */}
       <div className=" p-[4px] rounded-full overflow-hidden relative z-20">

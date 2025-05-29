@@ -17,6 +17,7 @@ import {
   addToFavorite,
   generateOutfit,
   getUserItems,
+  getAllOutfits,
 } from "@/src/services/cloths";
 import { useRouter } from "next/navigation";
 import { developmentURL } from "@/src/apis/constraints";
@@ -29,6 +30,7 @@ import {
 } from "@ant-design/icons";
 import TextArea from "antd/es/input/TextArea";
 import Chat from "@/src/components/chat";
+import OutfitCarousel from "@/src/components/FavoriteCarousel";
 
 interface ApiItem {
   _id: string;
@@ -91,6 +93,15 @@ export default function Wardrobe() {
   });
   const [isFavorite, setIsFavorite] = useState(false);
   const [outfitGeneratedId, setOutfitGeneratedId] = useState<string>("");
+  const [outfits, setOutfits] = useState<
+    Array<{
+      _id: string;
+      imageUrl: string;
+      name: string;
+      isFavorite: boolean;
+    }>
+  >([]);
+
   useEffect(() => {
     const token = localStorage.getItem("auth-storage");
     if (!token) router.push("/login");
@@ -126,6 +137,29 @@ export default function Wardrobe() {
 
     fetchItems();
   }, []); // Empty dependency array means this runs once on mount
+
+  useEffect(() => {
+    const fetchOutfits = async () => {
+      try {
+        const response = await getAllOutfits();
+        if (response?.data) {
+          setOutfits(
+            response.data.map((item: any) => ({
+              _id: item._id,
+              imageUrl: item.imageUrl || item.imageLink,
+              name: item.name || "Outfit",
+              isFavorite: item.isFavorite,
+            }))
+          );
+        }
+      } catch (error) {
+        console.error("Error fetching outfits:", error);
+        message.error("Failed to load outfits");
+      }
+    };
+
+    fetchOutfits();
+  }, [isFavorite]); // Refetch when favorite status changes
 
   const handleClose = () => {
     setIsOpen(false);
@@ -269,16 +303,30 @@ export default function Wardrobe() {
     setSelectedItems(newSelectedItems);
   };
 
-  const handleToggleFavorite = async () => {
-    if (!outfitGeneratedId) {
+  const handleToggleFavorite = async (itemId?: string) => {
+    const targetId = itemId || outfitGeneratedId;
+
+    if (!targetId) {
       message.warning("Vui lòng tạo trang phục trước khi thêm vào yêu thích");
       return;
     }
 
     try {
-      const response = await addToFavorite(outfitGeneratedId);
+      const response = await addToFavorite(targetId);
       if (response?.httpStatusCode === 200) {
-        setIsFavorite((prev) => !prev);
+        if (itemId) {
+          // Update the outfits list directly
+          setOutfits((prevOutfits) =>
+            prevOutfits.map((outfit) =>
+              outfit._id === itemId
+                ? { ...outfit, isFavorite: !outfit.isFavorite }
+                : outfit
+            )
+          );
+        } else {
+          // Update the main outfit's favorite status
+          setIsFavorite((prev) => !prev);
+        }
         message.success(
           isFavorite ? "Đã xóa khỏi yêu thích" : "Đã thêm vào yêu thích"
         );
@@ -290,7 +338,7 @@ export default function Wardrobe() {
   };
 
   return (
-    <div className="wardrobe min-h-screen w-100vw  ">
+    <div className="wardrobe min-h-screen w-100vw">
       <section className="bg-hero-pattern bg-cover bg-center">
         <Header />
         <div className="wardrobe_content px-[100px] py-[50px]">
@@ -410,94 +458,33 @@ export default function Wardrobe() {
           </div>
         </div>
       </section>
-      <section className="wardrobe_chat px-[100px] py-[50px] bg-white-50 ">
+
+      <section className="px-[100px] py-[50px]">
         <TypographyCustom text="AI GENERATE" size={80} />
         <Chat
           onOutfitSelect={handleOutfitSelection}
           itemSelect={selectedItems}
           handleGenerateOutfit={handleGenerateOutfit}
         />
-        {/* <InputCustom2 className="w-full h-[90px] " placeholder="Tìm Kiếm" />
-          <div className=" w-full wardrobe_chat__container my-20 flex justify-between items-start gap-40 ">
-            <div className="wardrobe_chat__container___model flex flex-col items-center justify-center gap-2">
-              <CardCustom
-                cardSrc={Model1.src}
-                cardWidth={411}
-                cardHeight={617}
-                className="w-[411px] h-[617px]"
-              />
-              <ButtonDiscCustom onClick={handleOpen}>
-                <Image
-                  src={Plus}
-                  alt="plus"
-                  width={24}
-                  height={24}
-                  className="mr-2"
-                />{" "}
-                Đặt Lịch Hẹn
-              </ButtonDiscCustom>
-              <ModalEvent isOpen={isOpen} handleCancle={handleClose} />
-            </div>
-            <div className="wardrobe_chat__items ">
-              <Row gutter={[20, 50]}>
-                <Col span={8}>
-                  <CardCustom
-                    cardSrc={OutfitDump.src}
-                    cardAlt="outfit-dump"
-                    className="w-[290px] h-[290px] "
-                    cardWidth={200}
-                    cardHeight={200}
-                  />
-                </Col>
-                <Col span={8}>
-                  <CardCustom
-                    cardSrc={OutfitDump.src}
-                    cardAlt="outfit-dump"
-                    className="w-[290px] h-[290px] "
-                    cardWidth={200}
-                    cardHeight={200}
-                  />
-                </Col>
-                <Col span={8}>
-                  <CardCustom
-                    cardSrc={OutfitDump.src}
-                    cardAlt="outfit-dump"
-                    className="w-[290px] h-[290px] "
-                    cardWidth={200}
-                    cardHeight={200}
-                  />
-                </Col>
-                <Col span={8}>
-                  <CardCustom
-                    cardSrc={OutfitDump.src}
-                    cardAlt="outfit-dump"
-                    className="w-[290px] h-[290px] "
-                    cardWidth={200}
-                    cardHeight={200}
-                  />
-                </Col>
-                <Col span={8}>
-                  <CardCustom
-                    cardSrc={OutfitDump.src}
-                    cardAlt="outfit-dump"
-                    className="w-[290px] h-[290px] "
-                    cardWidth={200}
-                    cardHeight={200}
-                  />
-                </Col>
-                <Col span={8}>
-                  <CardCustom
-                    cardSrc={OutfitDump.src}
-                    cardAlt="outfit-dump"
-                    className="w-[290px] h-[290px] "
-                    cardWidth={200}
-                    cardHeight={200}
-                  />
-                </Col>
-              </Row>
-            </div>
-          </div> 
-          */}
+      </section>
+      <section className="px-[100px] py-[50px] h-[100vh]">
+        <div className="w-full">
+          <TypographyCustom text="YOUR OUTFITS " size={80} />
+        </div>
+        {outfits.length > 0 ? (
+          <OutfitCarousel
+            items={outfits}
+            onSelect={(item) => {
+              // Handle outfit selection if needed
+              console.log("Selected outfit:", item);
+            }}
+            onToggleFavorite={handleToggleFavorite}
+          />
+        ) : (
+          <div className="text-center text-gray-500 text-xl">
+            No outfits yet. Create some outfits to see them here!
+          </div>
+        )}
       </section>
     </div>
   );

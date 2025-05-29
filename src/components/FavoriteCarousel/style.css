@@ -1,0 +1,12 @@
+.outfit-carousel {
+  .ant-carousel {
+    .slick-slide {
+      padding: 10px;
+    }
+  }
+}
+
+.outfit-carousel .ant-carousel .slick-track {
+  display: flex !important;
+  gap: 1rem;
+}

@@ -18,11 +18,11 @@ export default function Profile() {
   return (
     <div className=" min-h-screen w-100vw bg-hero-pattern bg-cover bg-center ">
       <Header />
-      <div className="profile-content flex items-center p-[300px]  ">
+      <div className="profile-content flex items-center p-[100px] ">
         <div className="mr-6 relative z-[2]">
           <Sidebar onSelect={setSelected} />
         </div>
-        <div className="flex-1 min-w-[1279px] h-[773px] mr-6 relative z-[2]">
+        <div className="flex-1 min-w-[1279px] min-h-[773px] mr-6  relative z-[2]">
           {selected === "profile" && <ProfileForm />}
           {selected === "logout" && (
             <>

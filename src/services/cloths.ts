@@ -13,9 +13,21 @@ interface UserItems {
   update_at: string;
   __v: number;
 }
+
+interface OutfitItem {
+  _id: string;
+  user: string;
+  imageUrl: string;
+  items: string[];
+  isFavorite: boolean;
+  create_at: string;
+  update_at: string;
+}
+
 interface GenerateOutfitData {
   image_url: string;
 }
+
 export const getUserItems = async () => {
   try {
     const res = await api.getInstance().get("/api/v1/items");
@@ -32,6 +44,39 @@ export const getUserItems = async () => {
     throw new Error("Lấy dữ liệu thất bại. Vui lòng thử lại.");
   }
 };
+
+export const getAllOutfits = async () => {
+  try {
+    const res = await api.getInstance().get("/api/v1/outfit");
+    // Sort outfits - favorites first, then by creation date within each group
+    const sortedOutfits = (res?.data?.data || []).sort(
+      (a: OutfitItem, b: OutfitItem) => {
+        if (a.isFavorite === b.isFavorite) {
+          // If both are favorite or both are not, sort by creation date (newest first)
+          return (
+            new Date(b.create_at).getTime() - new Date(a.create_at).getTime()
+          );
+        }
+        // Put favorites first
+        return a.isFavorite ? -1 : 1;
+      }
+    );
+
+    return {
+      httpStatusCode: res.status,
+      data: sortedOutfits,
+    };
+  } catch (err: any) {
+    if (err.response?.status === 400) {
+      const message =
+        err.response.data.errors[0].errorMessage ||
+        "Lấy dữ liệu trang phục thất bại";
+      throw new Error(message);
+    }
+    throw new Error("Lấy dữ liệu trang phục thất bại. Vui lòng thử lại.");
+  }
+};
+
 export const generateOutfit = async (itemIds: string[]) => {
   try {
     const res = await api.getInstance().post("/api/v1/outfit/generate", {
@@ -49,12 +94,13 @@ export const generateOutfit = async (itemIds: string[]) => {
     }
   }
 };
+
 export const addToFavorite = async (itemId: string) => {
   try {
     console.log("Calling favorite API with ID:", itemId);
     const res = await api
       .getInstance()
-      .post(`/api/v1/outfit?${itemId}/favorite`);
+      .post(`/api/v1/outfit/${itemId}/favorite`);
     console.log("Favorite API response:", res);
     return {
       httpStatusCode: res.status,

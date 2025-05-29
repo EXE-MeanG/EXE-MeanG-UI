@@ -33,7 +33,6 @@ import axios, {
 } from "axios";
 import { developmentURL } from "./constraints";
 import { useAuthStore } from "../stores/authStore";
-
 const baseURL = developmentURL;
 
 export class Api {
@@ -66,17 +65,18 @@ export class Api {
       (response) => response,
       async (error) => {
         const originalRequest = error.config;
-
         if (error.response?.status === 401 && !originalRequest._retry) {
           originalRequest._retry = true;
           try {
             const refreshToken = useAuthStore.getState().refreshToken;
             if (!refreshToken) throw new Error("No refresh token");
 
-            const response = await axios.post(
+            const response = await axios.get(
               `${baseURL}api/v1/auth/refresh-token`,
               {
-                refreshToken,
+                headers: {
+                  Authorization: `Bearer ${refreshToken}`,
+                },
               }
             );
 
@@ -90,7 +90,9 @@ export class Api {
             originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
             return this.instance(originalRequest);
           } catch (err) {
-            useAuthStore.getState().clearTokens();
+            // useAuthStore.getState().clearTokens();
+            console.log("Error refreshing token:", err);
+
             return Promise.reject(err);
           }
         }

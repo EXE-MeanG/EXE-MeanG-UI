@@ -18,6 +18,8 @@ import { useRouter } from "next/navigation";
 import { developmentURL } from "@/src/apis/constraints";
 import { useAuthStore } from "@/src/stores/authStore";
 import { UploadOutlined } from "@ant-design/icons";
+import TextArea from "antd/es/input/TextArea";
+import Chat from "@/src/components/chat";
 
 interface ApiItem {
   _id: string;
@@ -304,10 +306,10 @@ export default function Wardrobe() {
           </div>
         </div>
       </section>
-      <section className="wardrobe_chat px-[100px] py-[50px] ">
+      <section className="wardrobe_chat px-[100px] py-[50px] bg-white-50 ">
         <TypographyCustom text="AI GENERATE" size={80} />
-        <div className="wardrobe_chat__content w-full">
-          <InputCustom2 className="w-full h-[90px] " placeholder="Tìm Kiếm" />
+        <Chat />
+        {/* <InputCustom2 className="w-full h-[90px] " placeholder="Tìm Kiếm" />
           <div className=" w-full wardrobe_chat__container my-20 flex justify-between items-start gap-40 ">
             <div className="wardrobe_chat__container___model flex flex-col items-center justify-center gap-2">
               <CardCustom
@@ -386,8 +388,8 @@ export default function Wardrobe() {
                 </Col>
               </Row>
             </div>
-          </div>
-        </div>
+          </div> 
+          */}
       </section>
     </div>
   );

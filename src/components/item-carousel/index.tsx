@@ -217,15 +217,12 @@ function ItemCarousel({
                 cardWidth={100}
                 cardHeight={100}
                 className={`!w-[179px] !h-[179px] cursor-pointer transition-all ${
-                  isSelected ? "opacity-95 scale-90" : ""
+                  isSelected
+                    ? "opacity-95 scale-[90%] border-[5px] border-lime-500"
+                    : ""
                 }`}
                 onClick={() => onSelectItem?.(item)}
               />
-              {isSelected && (
-                <div className="absolute top-2 right-11 z-20">
-                  <CheckCircleFilled className="text-2xl text-primary !text-green-500" />
-                </div>
-              )}
             </div>
           );
         })}

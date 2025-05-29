@@ -1,11 +1,15 @@
 import { ChatResponse, Chatting } from "@/src/services/chat";
 import { ArrowRightOutlined, LoadingOutlined } from "@ant-design/icons";
-import { Tag, Button } from "antd";
+import { Tag, Button, Image } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import dayjs from "dayjs";
 import React, { useState, useRef, useEffect, use } from "react";
 import { GlitchReveal } from "../shared/GlitchTypo";
 import CardCustom from "../shared/Card/cardCustom";
+import { SelectedItems } from "@/src/app/wardrobe/page";
+import ButtonDiscCustom from "../shared/ButtonDIsc/discCustom";
+import PlaceHolderImage from "@/src/assets/images/placeholder.png";
+import Plus from "@/src/assets/icons/plus.png";
 
 type MessageType = "user" | "bot";
 
@@ -17,7 +21,13 @@ interface Message {
   outfit?: string[];
 }
 
-function Chat() {
+interface ChatProps {
+  onOutfitSelect?: (outfit: string[]) => void;
+  itemSelect?: SelectedItems;
+  handleGenerateOutfit: () => void;
+}
+
+function Chat({ onOutfitSelect, itemSelect, handleGenerateOutfit }: ChatProps) {
   const [value, setValue] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
@@ -37,6 +47,8 @@ function Chat() {
       chatContentRef.current.scrollTop = chatContentRef.current.scrollHeight;
     }
   }, [messages]);
+
+  // Initial message
   useEffect(() => {
     const initialMessages: Message[] = [
       {
@@ -49,13 +61,20 @@ function Chat() {
     ];
     setMessages(initialMessages);
   }, []);
+
+  // Handle outfit selection
   useEffect(() => {
-    if (generatedOutfit.length > 0) {
-      generatedOutfit.forEach((item) => {
-        
-      });
+    const lastMessage = messages[messages.length - 1];
+    if (
+      lastMessage?.type === "bot" &&
+      lastMessage?.outfit &&
+      lastMessage.outfit.length > 0 &&
+      onOutfitSelect
+    ) {
+      onOutfitSelect(lastMessage.outfit);
     }
-  }, [generatedOutfit]);
+  }, [messages]); // Remove onOutfitSelect from dependencies since it's stable
+
   // Handle send message
   const handleSendMessage = async () => {
     if (!value.trim()) return;
@@ -136,6 +155,48 @@ function Chat() {
                   <div className="text-base leading-relaxed whitespace-pre-line">
                     {message.content}
                   </div>
+                  {message.outfit && message.outfit.length > 0 && (
+                    <div className="mt-2">
+                      <span className="text-sm font-semibold">
+                        Gợi ý trang phục:
+                      </span>
+                      <div className="flex flex-wrap gap-2 mt-1">
+                        {message.outfit.map((item, index) => (
+                          <CardCustom
+                            key={index}
+                            cardSrc={
+                              item === itemSelect?.upper?.id
+                                ? itemSelect?.upper?.imageSrc || ""
+                                : item === itemSelect?.downer?.id
+                                ? itemSelect?.downer?.imageSrc || ""
+                                : item === itemSelect?.shoes?.id
+                                ? itemSelect?.shoes?.imageSrc || ""
+                                : PlaceHolderImage.src
+                            }
+                            cardAlt={item}
+                            cardWidth={100}
+                            cardHeight={100}
+                            className={`!w-[179px] !h-[179px] cursor-pointer transition-all `}
+                          />
+                        ))}
+                      </div>
+                      <div className="btn-generate-outfit my-5">
+                        <ButtonDiscCustom
+                          onClick={handleGenerateOutfit}
+                          className="shadow-lg shadow-black/25"
+                        >
+                          <Image
+                            src={Plus.src}
+                            alt="plus"
+                            width={24}
+                            height={24}
+                            className="mr-2 "
+                          />{" "}
+                          Tạo Trang Phục
+                        </ButtonDiscCustom>
+                      </div>
+                    </div>
+                  )}
                   <div
                     className={`text-xs mt-2 ${
                       message.type === "user"
@@ -145,25 +206,6 @@ function Chat() {
                   >
                     {message.timestamp}
                   </div>
-                  {message.outfit && message.outfit.length > 0 && (
-                    <div className="mt-2">
-                      <span className="text-sm font-semibold">
-                        Gợi ý trang phục:
-                      </span>
-                      <div className="flex flex-wrap gap-2 mt-1">
-                        {message.outfit.map((item, index) => (
-                          <CardCustom
-                            cardSrc={item}
-                            cardAlt={item}
-                            cardWidth={100}
-                            cardHeight={100}
-                            className={`!w-[179px] !h-[179px] cursor-pointer transition-all `}
-                            // onClick={() => onSelectItem?.(item)}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  )}
                 </div>
               </div>
             ))}

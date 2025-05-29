@@ -8,8 +8,9 @@ import { GlitchReveal } from "../shared/GlitchTypo";
 import CardCustom from "../shared/Card/cardCustom";
 import { SelectedItems } from "@/src/app/wardrobe/page";
 import ButtonDiscCustom from "../shared/ButtonDIsc/discCustom";
-import PlaceHolderImage from "@/src/assets/images/placeholder.png";
-import Plus from "@/src/assets/icons/plus.png";
+import PlaceHolderImage from "../../assets/images/placeholder.png";
+import Plus from "../../assets/icons/plus.png";
+
 
 type MessageType = "user" | "bot";
 

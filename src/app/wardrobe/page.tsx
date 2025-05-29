@@ -2,22 +2,22 @@
 import Header from "@/src/components/layouts/Header";
 import CardCustom from "@/src/components/shared/Card/cardCustom";
 import TypographyCustom from "@/src/components/shared/Typography/TypographyCustom";
-import Model1 from "@/src/assets/model/model1.png";
+import Model1 from "../../assets/model/model1.png";
 import { useState, useEffect } from "react";
 import ItemCarousel from "@/src/components/item-carousel";
 import ButtonDiscCustom from "@/src/components/shared/ButtonDIsc/discCustom";
 import Image from "next/image";
-import Plus from "@/src/assets/icons/plus.png";
+import Plus from "../../assets/icons/plus.png";
 import ModalEvent from "@/src/components/shared/ModalEvent/modalEvent";
-import InputCustom2 from "@/src/components/shared/Input/InputCustom2";
-import { Col, GetProp, Row, Upload, UploadProps, message } from "antd";
-import OutfitDump from "@/src/assets/outfit/o1.png";
+import { GetProp, Upload, UploadProps, message, Modal } from "antd";
 import { uploadApi, CategoryEnum } from "@/src/apis/upload.api";
 import {
   addToFavorite,
   generateOutfit,
   getUserItems,
   getAllOutfits,
+  deleteItem,
+  deleteOutfit,
 } from "@/src/services/cloths";
 import { useRouter } from "next/navigation";
 import { developmentURL } from "@/src/apis/constraints";
@@ -27,8 +27,8 @@ import {
   HeartOutlined,
   HeartFilled,
   LoadingOutlined,
+  DeleteOutlined,
 } from "@ant-design/icons";
-import TextArea from "antd/es/input/TextArea";
 import Chat from "@/src/components/chat";
 import OutfitCarousel from "@/src/components/FavoriteCarousel";
 
@@ -101,6 +101,12 @@ export default function Wardrobe() {
       isFavorite: boolean;
     }>
   >([]);
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState<{
+    id: string;
+    type: "item" | "outfit";
+  } | null>(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("auth-storage");
@@ -335,6 +341,96 @@ export default function Wardrobe() {
     }
   };
 
+  const handleDeleteClick = (id: string, type: "item" | "outfit") => {
+    setItemToDelete({ id, type });
+    setDeleteModalVisible(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!itemToDelete) return;
+
+    setLoading(true);
+    try {
+      if (itemToDelete.type === "item") {
+        await deleteItem(itemToDelete.id);
+        // Refresh items list
+        const apiData = await getUserItemsTyped();
+        const transformedData: CarouselItems = {
+          uppers: (apiData.data || [])
+            .filter((item) => item.category_enum === "shirt")
+            .map((item) => ({
+              imageSrc: item.imageLink,
+              imageAlt: item.name,
+              id: item._id,
+            })),
+          downers: (apiData.data || [])
+            .filter((item) => item.category_enum === "pants")
+            .map((item) => ({
+              imageSrc: item.imageLink,
+              imageAlt: item.name,
+              id: item._id,
+            })),
+          ass: (apiData.data || [])
+            .filter((item) => item.category_enum === "shoes")
+            .map((item) => ({
+              imageSrc: item.imageLink,
+              imageAlt: item.name,
+              id: item._id,
+            })),
+        };
+        setCarouselItems(transformedData);
+      } else {
+        await deleteOutfit(itemToDelete.id);
+        // Refresh outfits list
+        const response = await getAllOutfits();
+        if (response?.data) {
+          setOutfits(
+            response.data.map((item: any) => ({
+              _id: item._id,
+              imageUrl: item.imageUrl || item.imageLink,
+              name: item.name || "Outfit",
+              isFavorite: item.isFavorite,
+            }))
+          );
+        }
+      }
+      message.success("Xóa thành công");
+    } catch (error: any) {
+      message.error(error.message || "Xóa thất bại");
+    } finally {
+      setLoading(false);
+      setDeleteModalVisible(false);
+      setItemToDelete(null);
+    }
+  };
+
+  const renderItemCarousel = (
+    type: keyof SelectedItems,
+    items: CarouselItem[],
+    selectedItem: CarouselItem | null
+  ) => (
+    <ItemCarousel
+      type={type === "shoes" ? "shoes" : type === "upper" ? "upper" : "downer"}
+      items={items}
+      onUpload={handleUpload}
+      selectedItem={selectedItem}
+      onSelectItem={(item) => handleItemSelect(type, item)}
+      renderItemActions={(item) => (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            if (item.id) {
+              handleDeleteClick(item.id, "item");
+            }
+          }}
+          className="absolute top-0 right-2 p-2 rounded-full bg-white/80 hover:bg-white transition-colors duration-200"
+        >
+          <DeleteOutlined className="text-xl text-red-500" />
+        </button>
+      )}
+    />
+  );
+
   return (
     <div className="wardrobe min-h-screen w-100vw">
       <section className="bg-hero-pattern bg-cover bg-center">
@@ -430,27 +526,21 @@ export default function Wardrobe() {
               <ModalEvent isOpen={isOpen} handleCancle={handleClose} />
             </div>
             <div className="wardrobe_content__container___items flex flex-col gap-10 ">
-              <ItemCarousel
-                type="upper"
-                items={carouselItems.uppers}
-                onUpload={handleUpload}
-                selectedItem={selectedItems.upper}
-                onSelectItem={(item) => handleItemSelect("upper", item)}
-              />
-              <ItemCarousel
-                type="downer"
-                items={carouselItems.downers}
-                onUpload={handleUpload}
-                selectedItem={selectedItems.downer}
-                onSelectItem={(item) => handleItemSelect("downer", item)}
-              />
-              <ItemCarousel
-                type="shoes"
-                items={carouselItems.ass}
-                onUpload={handleUpload}
-                selectedItem={selectedItems.shoes}
-                onSelectItem={(item) => handleItemSelect("shoes", item)}
-              />
+              {renderItemCarousel(
+                "upper",
+                carouselItems.uppers,
+                selectedItems.upper
+              )}
+              {renderItemCarousel(
+                "downer",
+                carouselItems.downers,
+                selectedItems.downer
+              )}
+              {renderItemCarousel(
+                "shoes",
+                carouselItems.ass,
+                selectedItems.shoes
+              )}
             </div>
           </div>
         </div>
@@ -472,10 +562,35 @@ export default function Wardrobe() {
           <OutfitCarousel
             items={outfits}
             onSelect={(item) => {
-              // Handle outfit selection if needed
               console.log("Selected outfit:", item);
             }}
             onToggleFavorite={handleToggleFavorite}
+            renderItemActions={(item) => (
+              <div className="absolute top-2 left-2 flex gap-2">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleToggleFavorite(item._id);
+                  }}
+                  className="p-2 rounded-full bg-white/80 hover:bg-white transition-colors duration-200"
+                >
+                  {item.isFavorite ? (
+                    <HeartFilled className="text-xl text-red-500" />
+                  ) : (
+                    <HeartOutlined className="text-xl text-gray-600 hover:text-red-500" />
+                  )}
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDeleteClick(item._id, "outfit");
+                  }}
+                  className="p-2 rounded-full bg-white/80 hover:bg-white transition-colors duration-200"
+                >
+                  <DeleteOutlined className="text-xl text-red-500" />
+                </button>
+              </div>
+            )}
           />
         ) : (
           <div className="text-center text-gray-500 text-xl">
@@ -483,6 +598,26 @@ export default function Wardrobe() {
           </div>
         )}
       </section>
+
+      {/* Delete Confirmation Modal */}
+      <Modal
+        title="Xác nhận xóa"
+        open={deleteModalVisible}
+        onOk={handleDeleteConfirm}
+        onCancel={() => {
+          setDeleteModalVisible(false);
+          setItemToDelete(null);
+        }}
+        confirmLoading={loading}
+        okText="Xóa"
+        cancelText="Hủy"
+        okButtonProps={{ danger: true }}
+      >
+        <p>
+          Bạn có chắc chắn muốn xóa{" "}
+          {itemToDelete?.type === "item" ? "trang phục" : "bộ trang phục"} này?
+        </p>
+      </Modal>
     </div>
   );
 }

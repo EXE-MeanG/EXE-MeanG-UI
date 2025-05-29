@@ -20,12 +20,14 @@ interface OutfitCarouselProps {
   items: OutfitItem[];
   onSelect?: (item: OutfitItem) => void;
   onToggleFavorite?: (itemId: string) => Promise<void>;
+  renderItemActions?: (item: OutfitItem) => React.ReactNode;
 }
 
 function OutfitCarousel({
   items,
   onSelect,
   onToggleFavorite,
+  renderItemActions,
 }: OutfitCarouselProps) {
   const carouselRef = useRef<any>(null);
 
@@ -66,16 +68,20 @@ function OutfitCarousel({
                 className="!w-[411px] !h-[617px] cursor-pointer transition-all hover:scale-105"
                 onClick={() => onSelect?.(item)}
               />
-              <button
-                onClick={(e) => handleHeartClick(e, item._id)}
-                className="absolute top-2 left-2 p-2 rounded-full bg-white/80 hover:bg-white transition-colors duration-200"
-              >
-                {item.isFavorite ? (
-                  <HeartFilled className="text-xl text-red-500" />
-                ) : (
-                  <HeartOutlined className="text-xl text-gray-600 hover:text-red-500" />
-                )}
-              </button>
+              {renderItemActions ? (
+                renderItemActions(item)
+              ) : (
+                <button
+                  onClick={(e) => handleHeartClick(e, item._id)}
+                  className="absolute top-2 left-2 p-2 rounded-full bg-white/80 hover:bg-white transition-colors duration-200"
+                >
+                  {item.isFavorite ? (
+                    <HeartFilled className="text-xl text-red-500" />
+                  ) : (
+                    <HeartOutlined className="text-xl text-gray-600 hover:text-red-500" />
+                  )}
+                </button>
+              )}
             </div>
           </div>
         ))}

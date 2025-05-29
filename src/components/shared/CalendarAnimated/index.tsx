@@ -4,13 +4,14 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import FloatingItem from "./floatingItems";
-import SandClock from "@/src/assets/images/sandclock.png";
-import Star from "@/src/assets/images/stars.png";
-import Ring from "@/src/assets/images/ring.png";
-import Speaker from "@/src/assets/images/speaker.png";
-import Piece from "@/src/assets/images/tua rua 1.png";
-import Piece2 from "@/src/assets/images/tua rua.png";
-import Calendar from "@/src/assets/images/calendar.png";
+import SandClock from "../../../assets/images/sandclock.png";
+
+import Star from "../../../assets/images/stars.png";
+import Ring from "../../../assets/images/ring.png";
+import Speaker from "../../../assets/images/speaker.png";
+import Piece from "../../../assets/images/tua rua 1.png";
+import Piece2 from "../../../assets/images/tua rua.png";
+import Calendar from "../../../assets/images/calendar.png";
 
 export default function CalendarAnimation() {
   const [isLoaded, setIsLoaded] = useState(false);

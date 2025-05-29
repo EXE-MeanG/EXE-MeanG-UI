@@ -4,7 +4,6 @@ import ProfileForm from "@/src/components/profile-form";
 import Sidebar from "@/src/components/profile-sidebars";
 import { useEffect, useState } from "react";
 import "./style.css";
-import { Button, Modal } from "antd";
 import Notification from "@/src/components/profile-notification";
 import Security from "@/src/components/profile-security";
 import { useRouter } from "next/navigation";

@@ -3,11 +3,11 @@
 import { useState } from "react";
 import { Form, FormProps, message } from "antd";
 import Image from "next/image";
-import Logo from "@/src/assets/logos/main-logo.png";
+import Logo from "../../assets/logos/main-logo.png";
 import InputCustom from "@/src/components/shared/Input/InputCustom";
 import InputPasswordCustom from "@/src/components/shared/Input/InputPasswordCustom";
 import ButtonCustom from "@/src/components/shared/Button/ButtonCustom";
-import Spakle from "@/src/assets/images/star.png";
+import Spakle from "../../assets/images/star.png";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import "./style.css";

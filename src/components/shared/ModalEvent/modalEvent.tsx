@@ -2,9 +2,9 @@ import { Button, DatePicker, Form, Input, Modal } from "antd";
 import Image from "next/image";
 import React, { useState } from "react";
 import ButtonCustom from "../Button/ButtonCustom";
-import Clock from "@/src/assets/icons/clock.png";
-import Environment from "@/src/assets/icons/environment.png";
-import Description from "@/src/assets/icons/description.png";
+import Clock from "../../../assets/icons/clock.png";
+import Environment from "../../../assets/icons/environment.png";
+import Description from "../../../assets/icons/description.png";
 import "./modalEvent.css";
 import dayjs from "dayjs";
 

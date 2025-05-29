@@ -123,3 +123,39 @@ export const addToFavorite = async (itemId: string) => {
     throw new Error("Thêm thất bại. Vui lòng thử lại.");
   }
 };
+
+export const deleteItem = async (itemId: string) => {
+  try {
+    const res = await api.getInstance().delete(`/api/v1/user/items/${itemId}`);
+    return {
+      httpStatusCode: res.status,
+      data: res.data,
+    };
+  } catch (err: any) {
+    if (err.response?.status === 400) {
+      const message =
+        err.response.data.errors[0].errorMessage || "Xóa trang phục thất bại";
+      throw new Error(message);
+    }
+    throw new Error("Xóa trang phục thất bại. Vui lòng thử lại.");
+  }
+};
+
+export const deleteOutfit = async (outfitId: string) => {
+  try {
+    const res = await api
+      .getInstance()
+      .delete(`/api/v1/user/outfits/${outfitId}`);
+    return {
+      httpStatusCode: res.status,
+      data: res.data,
+    };
+  } catch (err: any) {
+    if (err.response?.status === 400) {
+      const message =
+        err.response.data.errors[0].errorMessage || "Xóa trang phục thất bại";
+      throw new Error(message);
+    }
+    throw new Error("Xóa trang phục thất bại. Vui lòng thử lại.");
+  }
+};

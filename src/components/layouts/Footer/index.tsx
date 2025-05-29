@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import Logo from "@/src/assets/logos/main-logo.png";
+import Logo from "../../../assets/logos/main-logo.png";
+
 import {
   FacebookOutlined,
   InstagramOutlined,

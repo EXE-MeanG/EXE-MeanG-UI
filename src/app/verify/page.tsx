@@ -1,20 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
-import Logo from "@/src/assets/logos/main-logo.png";
-import InputCustom from "@/src/components/shared/Input/InputCustom";
+import Logo from "../../assets/logos/main-logo.png";
 import ButtonCustom from "@/src/components/shared/Button/ButtonCustom";
-import Spakle from "@/src/assets/images/star.png";
+import Spakle from "../../assets/images/star.png";
 import { useRegisterStore } from "@/src/stores/registerStore";
 import { Divider, Form, message, Modal } from "antd";
 import { useRouter } from "next/navigation";
-import {
-  CheckCircleFilled,
-  CheckCircleOutlined,
-  CheckOutlined,
-  MailOutlined,
-} from "@ant-design/icons";
+import { CheckCircleOutlined } from "@ant-design/icons";
 import "./style.css";
 import { useForm } from "antd/es/form/Form";
 import { FormProps } from "antd/lib";

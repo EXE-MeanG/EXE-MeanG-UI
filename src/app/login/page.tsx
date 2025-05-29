@@ -1,11 +1,11 @@
 "use client";
 
 import Image from "next/image";
-import Logo from "@/src/assets/logos/main-logo.png";
+import Logo from "../../assets/logos/main-logo.png";
 import InputCustom from "@/src/components/shared/Input/InputCustom";
 import InputPasswordCustom from "@/src/components/shared/Input/InputPasswordCustom";
 import ButtonCustom from "@/src/components/shared/Button/ButtonCustom";
-import Spakle from "@/src/assets/images/star.png";
+import Spakle from "../../assets/images/star.png";
 import { Checkbox, Divider, Form, FormProps, message } from "antd";
 import {
   GoogleOutlined,
@@ -13,9 +13,8 @@ import {
   LoadingOutlined,
 } from "@ant-design/icons";
 import { login } from "@/src/services/auth";
-import { useAuthStore } from "@/src/stores/authStore";
 import { useState } from "react";
-import { notFound, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import "./style.css";
 import Link from "next/link";
 type FieldType = {

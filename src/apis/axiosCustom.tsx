@@ -1,30 +1,4 @@
-// import axios from "axios";
-// import { developmentURL } from "./constraints";
 
-// const baseURL = developmentURL;
-
-// export class Api {
-//   constructor() {
-//     this.instance = axios.create({
-//       baseURL,
-//       timeout: 10000,
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//     });
-//   }
-
-//   getOutsideApi(url, body) {
-//     return this.instance.get(url, body);
-//   }
-
-//   getInstance() {
-//     return this.instance;
-//   }
-// }
-
-// const api = new Api();
-// export default api;
 import axios, {
   AxiosInstance,
   AxiosRequestConfig,

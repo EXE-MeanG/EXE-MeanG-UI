@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import Logo from "@/src/assets/logos/main-logo.png";
+import Logo from "../../../assets/logos/main-logo.png";
 import { useEffect, useState } from "react";
 import {
   UserOutlined,

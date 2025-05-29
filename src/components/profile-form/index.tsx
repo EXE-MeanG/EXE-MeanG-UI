@@ -11,7 +11,7 @@ import {
   message,
   Form,
 } from "antd";
-import AvatarDump from "@/src/assets/images/avatardump.png";
+import AvatarDump from "../../assets/images/avatardump.png";
 import AvaDiscCustom from "../shared/AvaDIsc/discCustom";
 import InputCustom from "../shared/Input/InputCustom";
 import DatePickerCustom from "../shared/Input/DatePickerCustom";

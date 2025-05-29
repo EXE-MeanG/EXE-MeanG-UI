@@ -1,24 +1,29 @@
 # Stage 1: Build app
-FROM node:20 AS builder
+FROM node:20-alpine AS builder
 
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm install
+
+RUN npm ci --production=false
 
 COPY . .
-RUN npm run build
 
-# Stage 2: Run app
+RUN npx next telemetry disable
+RUN npx next build
+
+RUN npm prune --production
+
 FROM node:20-alpine AS runner
 
 WORKDIR /app
 
-# Copy từ stage build
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/public ./public
+
+ENV NODE_ENV=production
 
 EXPOSE 3000
 

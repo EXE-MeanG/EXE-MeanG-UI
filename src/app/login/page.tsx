@@ -13,7 +13,6 @@ import {
   LoadingOutlined,
 } from "@ant-design/icons";
 import { login } from "@/src/services/auth";
-import { useAuthStore } from "@/src/stores/authStore";
 import { useState } from "react";
 import { notFound, useRouter } from "next/navigation";
 import "./style.css";

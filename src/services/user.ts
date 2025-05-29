@@ -55,7 +55,9 @@ export const getUserProfile = async () => {
 
 export const updateProfile = async (data: UpdateProfilePayload) => {
   try {
-    const res = await api.getInstance().patch("/api/v1/user/profile", data);
+    const res = await api.getInstance().patch("/api/v1/user/profile", {
+      updateProfileDto: data,
+    });
     return {
       httpStatusCode: res.status,
       data: res?.data?.data as UserProfile,

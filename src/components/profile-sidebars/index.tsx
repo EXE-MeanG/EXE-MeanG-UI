@@ -13,7 +13,6 @@ const items = [
   { key: "profile", icon: <UserOutlined />, label: "Hồ sơ cá nhân" },
   { key: "security", icon: <LockOutlined />, label: "Bảo Mật" },
   { key: "notifications", icon: <BellOutlined />, label: "Thông báo" },
-  { key: "logout", icon: <LogoutOutlined />, label: "Đăng xuất" },
 ];
 
 export default function Sidebar({

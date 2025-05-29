@@ -225,8 +225,8 @@ export default function Wardrobe() {
   };
 
   const handleGenerateOutfit = async () => {
-    if (!selectedItems.upper || !selectedItems.downer || !selectedItems.shoes) {
-      message.warning("Vui lòng chọn đủ trang phục trước khi tạo");
+    if (!selectedItems.upper || !selectedItems.downer) {
+      message.warning("Vui lòng chọn áo và quần trước khi tạo");
       return;
     }
 
@@ -234,23 +234,21 @@ export default function Wardrobe() {
     const outfitIds = [
       selectedItems.upper.id,
       selectedItems.downer.id,
-      selectedItems.shoes.id,
+      selectedItems.shoes?.id, // Make shoes optional
     ].filter((id): id is string => id !== undefined);
 
-    if (outfitIds.length === 3) {
-      try {
-        const response = await generateOutfit(outfitIds);
-        if (response?.data) {
-          message.success("Tạo trang phục thành công");
-          setGeneratedOutfitImage(response.data.imageUrl);
-          setOutfitGeneratedId(response.data._id);
-        }
-      } catch (error) {
-        message.error("Tạo trang phục thất bại");
-        console.error("Generate outfit error:", error);
-      } finally {
-        setIsGenerating(false);
+    try {
+      const response = await generateOutfit(outfitIds);
+      if (response?.data) {
+        message.success("Tạo trang phục thành công");
+        setGeneratedOutfitImage(response.data.imageUrl);
+        setOutfitGeneratedId(response.data._id);
       }
+    } catch (error) {
+      message.error("Tạo trang phục thất bại");
+      console.error("Generate outfit error:", error);
+    } finally {
+      setIsGenerating(false);
     }
   };
 
@@ -412,7 +410,6 @@ export default function Wardrobe() {
                   disabled={
                     !selectedItems.upper ||
                     !selectedItems.downer ||
-                    !selectedItems.shoes ||
                     isGenerating
                   }
                 >

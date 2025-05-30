@@ -442,7 +442,7 @@ export default function Wardrobe() {
               <div className="relative group">
                 <Upload
                   name="image"
-                  action={`${developmentURL}api/v1/user/upload-body-image`}
+                  action={`${developmentURL}/api/v1/user/upload-body-image`}
                   headers={{
                     Authorization: `Bearer ${token}`,
                   }}

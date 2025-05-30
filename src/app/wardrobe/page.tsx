@@ -31,6 +31,7 @@ import {
 } from "@ant-design/icons";
 import Chat from "@/src/components/chat";
 import OutfitCarousel from "@/src/components/FavoriteCarousel";
+import { getUserProfile } from "@/src/services/user";
 
 interface ApiItem {
   _id: string;
@@ -107,7 +108,7 @@ export default function Wardrobe() {
     type: "item" | "outfit";
   } | null>(null);
   const [loading, setLoading] = useState(false);
-
+  const [initOutfit, setInitOutfit] = useState(Model1.src);
   useEffect(() => {
     const token = localStorage.getItem("auth-storage");
     if (!token) router.push("/login");
@@ -166,7 +167,15 @@ export default function Wardrobe() {
 
     fetchOutfits();
   }, [isFavorite]); // Refetch when favorite status changes
-
+  useEffect(() => {
+    const fetchInitOutfit = async () => {
+      const response = await getUserProfile();
+      if (response?.data) {
+        setGeneratedOutfitImage(response.data.bodyImageUrl);
+      }
+    };
+    fetchInitOutfit();
+  }, []);
   const handleClose = () => {
     setIsOpen(false);
   };

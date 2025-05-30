@@ -70,63 +70,66 @@ function ItemCarousel({
   };
 
   return (
-    <div className="w-full item-carousel flex flex-1 gap-14 items-center">
-      <LeftOutlined className="!text-4xl cursor-pointer" onClick={prev} />
-      <Carousel
-        infinite
-        dots={false}
-        dotPosition="bottom"
-        slidesToShow={4}
-        className="!w-[900px] !h-[179px]"
-        ref={carouselRef}
-      >
-        <div className="px-2">
-          <Upload
-            name="image"
-            showUploadList={false}
-            customRequest={({ file }) => {
-              if (file instanceof File) {
-                handleUpload(file);
-              }
-            }}
-            disabled={isUploading}
-          >
-            <CardCustom2 className="!w-[179px] !h-[179px] cursor-pointer transition-all hover:scale-105">
-              {isUploading ? (
-                <>
-                  <LoadingOutlined className="text-2xl mb-2" spin />
-                  <span className="text-gray-500">Uploading...</span>
-                </>
-              ) : (
-                <>
-                  <Image src={Plus} alt="plus" width={24} height={24} />
-                  <span className="mt-2 text-gray-500">Upload {type}</span>
-                </>
-              )}
-            </CardCustom2>
-          </Upload>
-        </div>
-        {items.map((item, index) => (
-          <div key={index} className="px-2">
-            <div className="relative">
-              <CardCustom
-                cardSrc={item.imageSrc}
-                cardAlt={item.imageAlt}
-                cardWidth={179}
-                cardHeight={179}
-                className={`!w-[179px] !h-[179px] cursor-pointer transition-all hover:scale-105 ${
-                  selectedItem?.imageSrc === item.imageSrc
-                    ? "border-4 border-blue-500"
-                    : ""
-                }`}
-                onClick={() => onSelectItem(item)}
-              />
-              {renderItemActions && renderItemActions(item)}
+    <div className="w-full flex flex-col gap-6">
+      <div className="flex items-center justify-start">
+        <Upload
+          name="image"
+          showUploadList={false}
+          customRequest={({ file }) => {
+            if (file instanceof File) {
+              handleUpload(file);
+            }
+          }}
+          disabled={isUploading}
+        >
+          <CardCustom2 className="!w-[179px] !h-[179px] cursor-pointer transition-all hover:scale-105">
+            {isUploading ? (
+              <>
+                <LoadingOutlined className="text-2xl mb-2" spin />
+                <span className="text-gray-500">Uploading...</span>
+              </>
+            ) : (
+              <>
+                <Image src={Plus} alt="plus" width={24} height={24} />
+                <span className="mt-2 text-gray-500">Upload {type}</span>
+              </>
+            )}
+          </CardCustom2>
+        </Upload>
+      </div>
+
+      <div className="item-carousel flex flex-1 gap-14 items-center">
+        <LeftOutlined className="!text-4xl cursor-pointer" onClick={prev} />
+        <Carousel
+          infinite
+          dots={false}
+          dotPosition="bottom"
+          slidesToShow={4}
+          className="!w-[900px] !h-[179px]"
+          ref={carouselRef}
+        >
+          {items.map((item, index) => (
+            <div key={index} className="px-2">
+              <div className="relative">
+                <CardCustom
+                  cardSrc={item.imageSrc}
+                  cardAlt={item.imageAlt}
+                  cardWidth={179}
+                  cardHeight={179}
+                  className={`!w-[179px] !h-[179px] cursor-pointer transition-all hover:scale-105 ${
+                    selectedItem?.imageSrc === item.imageSrc
+                      ? "border-4 border-blue-500"
+                      : ""
+                  }`}
+                  onClick={() => onSelectItem(item)}
+                />
+                {renderItemActions && renderItemActions(item)}
+              </div>
             </div>
-          </div>
-        ))}
-      </Carousel>
-      <RightOutlined className="!text-4xl cursor-pointer" onClick={next} />
+          ))}
+        </Carousel>
+        <RightOutlined className="!text-4xl cursor-pointer" onClick={next} />
+      </div>
     </div>
   );
 }

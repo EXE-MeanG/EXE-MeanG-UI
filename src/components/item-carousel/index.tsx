@@ -50,6 +50,7 @@ function ItemCarousel({
   renderItemActions,
 }: ItemCarouselProps) {
   const carouselRef = useRef<any>(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   const next = () => {
     carouselRef.current.next();
@@ -57,6 +58,15 @@ function ItemCarousel({
 
   const prev = () => {
     carouselRef.current.prev();
+  };
+
+  const handleUpload = async (file: File) => {
+    setIsUploading(true);
+    try {
+      await onUpload(type, file);
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   return (
@@ -70,6 +80,32 @@ function ItemCarousel({
         className="!w-[900px] !h-[179px]"
         ref={carouselRef}
       >
+        <div className="px-2">
+          <Upload
+            name="image"
+            showUploadList={false}
+            customRequest={({ file }) => {
+              if (file instanceof File) {
+                handleUpload(file);
+              }
+            }}
+            disabled={isUploading}
+          >
+            <CardCustom2 className="!w-[179px] !h-[179px] cursor-pointer transition-all hover:scale-105">
+              {isUploading ? (
+                <>
+                  <LoadingOutlined className="text-2xl mb-2" spin />
+                  <span className="text-gray-500">Uploading...</span>
+                </>
+              ) : (
+                <>
+                  <Image src={Plus} alt="plus" width={24} height={24} />
+                  <span className="mt-2 text-gray-500">Upload {type}</span>
+                </>
+              )}
+            </CardCustom2>
+          </Upload>
+        </div>
         {items.map((item, index) => (
           <div key={index} className="px-2">
             <div className="relative">

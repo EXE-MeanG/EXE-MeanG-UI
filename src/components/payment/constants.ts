@@ -1,0 +1,37 @@
+export const plans = [
+  {
+    name: "Basic",
+    price: "49,000₫",
+    amount: 49000,
+    annual: "",
+    description: "5 lượt generate ảnh",
+    features: ["5 lượt generate ảnh"],
+    button: "Chọn gói",
+    highlight: false,
+  },
+  {
+    name: "Standard",
+    price: "99,000₫",
+    amount: 99000,
+    annual: "",
+    description: "10 lượt generate ảnh và không giới hạn chat",
+    features: ["10 lượt generate ảnh", "Không giới hạn chat"],
+    button: "Chọn gói",
+    highlight: true,
+    badge: "Phổ biến",
+  },
+  {
+    name: "Premium",
+    price: "259,000₫",
+    amount: 259000,
+    annual: "",
+    description: "Không giới hạn mọi thứ trong 1 tháng",
+    features: [
+      "Không giới hạn lượt generate",
+      "Không giới hạn chat",
+      "Hiệu lực 1 tháng",
+    ],
+    button: "Chọn gói",
+    highlight: false,
+  },
+];

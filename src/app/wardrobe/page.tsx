@@ -32,6 +32,7 @@ import {
 import Chat from "@/src/components/chat";
 import OutfitCarousel from "@/src/components/FavoriteCarousel";
 import { getUserProfile } from "@/src/services/user";
+import ModalPayment from "@/src/components/payment/ModalPayment";
 
 interface ApiItem {
   _id: string;
@@ -74,6 +75,7 @@ type GetUserItemsFunction = () => Promise<ApiResponse>;
 const getUserItemsTyped: GetUserItemsFunction = getUserItems;
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 export default function Wardrobe() {
+  const [isModalPaymentOpen, setIsModalPaymentOpen] = useState(false);
   const [generatedOutfit, setGeneratedOutfit] = useState("");
   const [generatedOutfitImage, setGeneratedOutfitImage] = useState<string>(
     Model1.src
@@ -259,9 +261,12 @@ export default function Wardrobe() {
         setGeneratedOutfitImage(response.data.imageUrl);
         setOutfitGeneratedId(response.data._id);
       }
-    } catch (error) {
-      message.error("Tạo trang phục thất bại");
+    } catch (error: any) {
       console.error("Generate outfit error:", error);
+      message.error(error?.message || "Tạo trang phục thất bại");
+      if (error.message === "Số lượt tạo trang phục đã hết") {
+        setIsModalPaymentOpen(true);
+      }
     } finally {
       setIsGenerating(false);
     }
@@ -627,6 +632,10 @@ export default function Wardrobe() {
           {itemToDelete?.type === "item" ? "trang phục" : "bộ trang phục"} này?
         </p>
       </Modal>
+      <ModalPayment
+        isOpen={isModalPaymentOpen}
+        onClose={() => setIsModalPaymentOpen(false)}
+      />
     </div>
   );
 }

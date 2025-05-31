@@ -92,6 +92,11 @@ export const generateOutfit = async (itemIds: string[]) => {
         err.response.data.errors[0].errorMessage || "Tạo Outfit thất bại";
       throw new Error(message);
     }
+    if (err.response.data.errors[0].errorCode === 100216) {
+      const message =
+        err.response.data.errors[0].errorMessage || "Số lượt tạo trang phục đã hết";
+      throw new Error(message);
+    }
   }
 };
 

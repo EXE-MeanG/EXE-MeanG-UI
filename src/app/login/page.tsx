@@ -36,8 +36,6 @@ export default function Login() {
       setLoading(false);
       router.push("/");
     } catch (error: any) {
-      router.push("/not-found");
-
       form.setFieldsValue({ password: "" });
       message.error(error.message);
       setLoading(false);

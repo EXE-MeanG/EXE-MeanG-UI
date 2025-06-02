@@ -83,6 +83,12 @@ const Header = () => {
           Tủ Đồ
         </Link>
         <Link
+          href="/outfits"
+          className="text-secondary not-italic text-xl font-semibold hover:text-white"
+        >
+          Trang Phục
+        </Link>
+        <Link
           href="/events"
           className="text-secondary not-italic text-xl font-semibold hover:text-white"
         >

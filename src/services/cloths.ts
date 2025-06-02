@@ -94,7 +94,8 @@ export const generateOutfit = async (itemIds: string[]) => {
     }
     if (err.response.data.errors[0].errorCode === 100216) {
       const message =
-        err.response.data.errors[0].errorMessage || "Số lượt tạo trang phục đã hết";
+        err.response.data.errors[0].errorMessage ||
+        "Số lượt tạo trang phục đã hết";
       throw new Error(message);
     }
   }
@@ -131,7 +132,7 @@ export const addToFavorite = async (itemId: string) => {
 
 export const deleteItem = async (itemId: string) => {
   try {
-    const res = await api.getInstance().delete(`/api/v1/user/items/${itemId}`);
+    const res = await api.getInstance().delete(`/api/v1/items/${itemId}`);
     return {
       httpStatusCode: res.status,
       data: res.data,

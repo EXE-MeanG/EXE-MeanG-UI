@@ -17,6 +17,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import "./style.css";
 import Link from "next/link";
+import AuthRedirect from "@/src/components/auth/AuthRedirect";
+
 type FieldType = {
   email?: string;
   password?: string;
@@ -47,111 +49,116 @@ export default function Login() {
     console.log("Failed:", errorInfo);
   };
   return (
-    <div className="login-screen min-h-screen w-full bg-hero-pattern bg-cover bg-center flex flex-col items-center justify-center px-4">
-      {/* Logo */}
-      <div
-        className="p-6 absolute top-0 left-0 right-0 hover:cursor-pointer"
-        onClick={() => router.push("/")}
-      >
-        <Image src={Logo} alt="MeanG" width={200} height={90} />
-      </div>
-
-      {/* Login box */}
-      <Form
-        form={form}
-        initialValues={{ remember: true }}
-        className="!w-full flex justify-center"
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
-      >
-        <div className="login-content w-[50%] h-[53%] bg-white p-8 rounded-xl shadow-md flex flex-col items-center">
-          <h1 className="text-2xl font-semibold mb-6">Đăng nhập</h1>
-
-          {/* Email */}
-
-          <Form.Item<FieldType>
-            name="email"
-            className="!w-full relative "
-            rules={[
-              {
-                required: true,
-                message: "Vui lòng nhập email hoặc số điện thoại",
-              },
-            ]}
-          >
-            <InputCustom
-              placeholder="Email hoặc số điện thoại"
-              className="w-[40%] h-[56px] mb-4 mx-auto"
-            />
-          </Form.Item>
-          {/* Password */}
-
-          <Form.Item<FieldType>
-            name="password"
-            className="!w-full"
-            rules={[
-              {
-                required: true,
-                message: "Vui lòng nhập email hoặc số điện thoại",
-              },
-            ]}
-          >
-            <InputPasswordCustom
-              placeholder="Mật khẩu"
-              className="w-[40%] h-[56px] mb-4 mx-auto"
-            />
-          </Form.Item>
-
-          {/* Đăng nhập */}
-          <div className="sparkle relative w-[40%] h-[56px] font-semibold mt-2">
-            <Form.Item label={null}>
-              <ButtonCustom
-                htmlType="submit"
-                className="w-full h-[56px] font-semibold  "
-              >
-                Đăng nhập
-                {loading && <LoadingOutlined className="mx-2" />}
-              </ButtonCustom>
-            </Form.Item>
-            <Image
-              src={Spakle}
-              alt="logo"
-              // width={20}
-              // height={20}
-              className="absolute z-10 right-[-10px] top-[-7px] w-8 h-8 animate-sparkle pointer-events-none"
-            />
-          </div>
-
-          {/* Options */}
-          <div className="w-[40%] flex justify-between items-center text-sm mt-2 mb-3">
-            <Checkbox className="text-quaternary">Ghi nhớ đăng nhập</Checkbox>
-            <a href="#" className="text-primary font-semibold hover:underline">
-              Quên mật khẩu?
-            </a>
-          </div>
-
-          {/* Hoặc */}
-          <div className="divider w-[40%] mb-4 flex items-center text-sm text-gray-500">
-            <Divider style={{ borderColor: "#000" }}>HOẶC</Divider>
-          </div>
-          {/* Social login */}
-          <div className="flex gap-4 mb-4 text-2xl">
-            <FacebookFilled className="text-[#1877F2] cursor-pointer" />
-            <GoogleOutlined className="text-[#EA4335] cursor-pointer" />
-          </div>
-
-          {/* Đăng ký */}
-          <p className="text-sm text-quaternary">
-            Bạn không có tài khoản?{" "}
-            <Link
-              href="/register"
-              className="text-primary font-medium hover:underline"
-            >
-              Đăng ký
-            </Link>
-          </p>
+    <AuthRedirect mode="auth">
+      <div className="login-screen min-h-screen w-full bg-hero-pattern bg-cover bg-center flex flex-col items-center justify-center px-4">
+        {/* Logo */}
+        <div
+          className="p-6 absolute top-0 left-0 right-0 hover:cursor-pointer"
+          onClick={() => router.push("/")}
+        >
+          <Image src={Logo} alt="MeanG" width={200} height={90} />
         </div>
-      </Form>
-    </div>
+
+        {/* Login box */}
+        <Form
+          form={form}
+          initialValues={{ remember: true }}
+          className="!w-full flex justify-center"
+          onFinish={onFinish}
+          onFinishFailed={onFinishFailed}
+        >
+          <div className="login-content w-[50%] h-[53%] bg-white p-8 rounded-xl shadow-md flex flex-col items-center">
+            <h1 className="text-2xl font-semibold mb-6">Đăng nhập</h1>
+
+            {/* Email */}
+
+            <Form.Item<FieldType>
+              name="email"
+              className="!w-full relative "
+              rules={[
+                {
+                  required: true,
+                  message: "Vui lòng nhập email hoặc số điện thoại",
+                },
+              ]}
+            >
+              <InputCustom
+                placeholder="Email hoặc số điện thoại"
+                className="w-[40%] h-[56px] mb-4 mx-auto"
+              />
+            </Form.Item>
+            {/* Password */}
+
+            <Form.Item<FieldType>
+              name="password"
+              className="!w-full"
+              rules={[
+                {
+                  required: true,
+                  message: "Vui lòng nhập email hoặc số điện thoại",
+                },
+              ]}
+            >
+              <InputPasswordCustom
+                placeholder="Mật khẩu"
+                className="w-[40%] h-[56px] mb-4 mx-auto"
+              />
+            </Form.Item>
+
+            {/* Đăng nhập */}
+            <div className="sparkle relative w-[40%] h-[56px] font-semibold mt-2">
+              <Form.Item label={null}>
+                <ButtonCustom
+                  htmlType="submit"
+                  className="w-full h-[56px] font-semibold  "
+                >
+                  Đăng nhập
+                  {loading && <LoadingOutlined className="mx-2" />}
+                </ButtonCustom>
+              </Form.Item>
+              <Image
+                src={Spakle}
+                alt="logo"
+                // width={20}
+                // height={20}
+                className="absolute z-10 right-[-10px] top-[-7px] w-8 h-8 animate-sparkle pointer-events-none"
+              />
+            </div>
+
+            {/* Options */}
+            <div className="w-[40%] flex justify-between items-center text-sm mt-2 mb-3">
+              <Checkbox className="text-quaternary">Ghi nhớ đăng nhập</Checkbox>
+              <a
+                href="#"
+                className="text-primary font-semibold hover:underline"
+              >
+                Quên mật khẩu?
+              </a>
+            </div>
+
+            {/* Hoặc */}
+            <div className="divider w-[40%] mb-4 flex items-center text-sm text-gray-500">
+              <Divider style={{ borderColor: "#000" }}>HOẶC</Divider>
+            </div>
+            {/* Social login */}
+            <div className="flex gap-4 mb-4 text-2xl">
+              <FacebookFilled className="text-[#1877F2] cursor-pointer" />
+              <GoogleOutlined className="text-[#EA4335] cursor-pointer" />
+            </div>
+
+            {/* Đăng ký */}
+            <p className="text-sm text-quaternary">
+              Bạn không có tài khoản?{" "}
+              <Link
+                href="/register"
+                className="text-primary font-medium hover:underline"
+              >
+                Đăng ký
+              </Link>
+            </p>
+          </div>
+        </Form>
+      </div>
+    </AuthRedirect>
   );
 }

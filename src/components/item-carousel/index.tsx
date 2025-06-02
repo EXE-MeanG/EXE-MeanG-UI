@@ -70,7 +70,7 @@ function ItemCarousel({
   };
 
   return (
-    <div className="w-full flex flex-col gap-6">
+    <div className="w-full flex  gap-6">
       <div className="flex items-center justify-start">
         <Upload
           name="image"
@@ -101,7 +101,6 @@ function ItemCarousel({
       <div className="item-carousel flex flex-1 gap-14 items-center">
         <LeftOutlined className="!text-4xl cursor-pointer" onClick={prev} />
         <Carousel
-          infinite
           dots={false}
           dotPosition="bottom"
           slidesToShow={4}

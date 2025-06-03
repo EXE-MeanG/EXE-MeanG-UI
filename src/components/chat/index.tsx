@@ -1,25 +1,34 @@
-import { ChatResponse, Chatting } from "@/src/services/chat";
-import { ArrowRightOutlined, LoadingOutlined } from "@ant-design/icons";
-import { Tag, Button, Image } from "antd";
+import { ChatResponse, Chatting, ReloadOutfit } from "@/src/services/chat";
+import {
+  ArrowRightOutlined,
+  LoadingOutlined,
+  ReloadOutlined,
+} from "@ant-design/icons";
+import { Tag, Button, Image, message } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import dayjs from "dayjs";
 import React, { useState, useRef, useEffect, use } from "react";
 import { GlitchReveal } from "../shared/GlitchTypo";
 import CardCustom from "../shared/Card/cardCustom";
 import { SelectedItems } from "@/src/app/wardrobe/page";
-import ButtonDiscCustom from "../shared/ButtonDIsc/discCustom";
+import ButtonDiscCustom from "@/src/components/shared/ButtonDIsc/discCustom";
 import PlaceHolderImage from "../../assets/images/placeholder.png";
 import Plus from "../../assets/icons/plus.png";
 
-
 type MessageType = "user" | "bot";
+type OutfitType = {
+  _id: string;
+  imageUrl?: string;
+  link?: string;
+};
 
 interface Message {
   id: number;
   type: MessageType;
   content: string;
   timestamp: string;
-  outfit?: string[];
+  outfit?: OutfitType[];
+  image?: string;
 }
 
 interface ChatProps {
@@ -32,8 +41,10 @@ function Chat({ onOutfitSelect, itemSelect, handleGenerateOutfit }: ChatProps) {
   const [value, setValue] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
-  const [generatedOutfit, setGeneratedOutfit] = useState<string[]>([]);
   const chatContentRef = useRef<HTMLDivElement>(null);
+  const [loadingItems, setLoadingItems] = useState<{ [key: string]: boolean }>(
+    {}
+  );
 
   const suggestedTags = [
     "Trang phục hôm nay là gì?",
@@ -72,7 +83,7 @@ function Chat({ onOutfitSelect, itemSelect, handleGenerateOutfit }: ChatProps) {
       lastMessage.outfit.length > 0 &&
       onOutfitSelect
     ) {
-      onOutfitSelect(lastMessage.outfit);
+      onOutfitSelect(lastMessage.outfit.map((outfit) => outfit._id));
     }
   }, [messages]); // Remove onOutfitSelect from dependencies since it's stable
 
@@ -91,6 +102,22 @@ function Chat({ onOutfitSelect, itemSelect, handleGenerateOutfit }: ChatProps) {
     setLoading(true);
     try {
       const botResponses: ChatResponse = await Chatting({ question: value });
+      const outfitItems =
+        botResponses.outfit?.map((id) => {
+          let imageUrl = PlaceHolderImage.src;
+          if (itemSelect?.upper?.id === id) {
+            imageUrl = itemSelect.upper.imageSrc;
+          } else if (itemSelect?.downer?.id === id) {
+            imageUrl = itemSelect.downer.imageSrc;
+          } else if (itemSelect?.shoes?.id === id) {
+            imageUrl = itemSelect.shoes.imageSrc;
+          }
+          return {
+            _id: id,
+            imageUrl,
+          };
+        }) || [];
+
       const botMessage: Message = {
         id: Date.now() + 1,
         type: "bot",
@@ -98,7 +125,7 @@ function Chat({ onOutfitSelect, itemSelect, handleGenerateOutfit }: ChatProps) {
           botResponses.reply ||
           "Tôi không hiểu câu hỏi của bạn. Vui lòng thử lại.",
         timestamp: dayjs().format("HH:mm:ss"),
-        outfit: botResponses.outfit || undefined,
+        outfit: outfitItems,
       };
       setMessages((prev) => [...prev, botMessage]);
       setLoading(false);
@@ -129,11 +156,58 @@ function Chat({ onOutfitSelect, itemSelect, handleGenerateOutfit }: ChatProps) {
     }
   };
 
+  const handleReload = async (item: OutfitType) => {
+    setLoadingItems((prev) => ({ ...prev, [item._id]: true }));
+    try {
+      const itemIds = messages[messages.length - 1].outfit?.map(
+        (outfit) => outfit._id
+      );
+      const response = await ReloadOutfit(item._id, itemIds || []);
+      const newOutFitItem: OutfitType = {
+        _id: response._id,
+        imageUrl: response.image,
+        link: response.link,
+      };
+
+      // Update the outfit in the messages
+      setMessages((prevMessages) =>
+        prevMessages.map((message) => {
+          if (message.type === "bot" && message.outfit) {
+            return {
+              ...message,
+              outfit: message.outfit.map((outfitItem) =>
+                outfitItem._id === item._id ? newOutFitItem : outfitItem
+              ),
+            };
+          }
+          return message;
+        })
+      );
+
+      // Update the selected outfit if onOutfitSelect is provided
+      if (onOutfitSelect) {
+        const lastMessage = messages[messages.length - 1];
+        if (lastMessage?.outfit) {
+          const updatedOutfit = lastMessage.outfit.map((outfitItem) =>
+            outfitItem._id === item._id ? newOutFitItem : outfitItem
+          );
+          onOutfitSelect(updatedOutfit.map((outfit) => outfit._id));
+        }
+      }
+      message.success("Trang phục đã được tạo lại");
+    } catch (error) {
+      console.error("Error reloading outfit:", error);
+      message.error("Failed to reload outfit");
+    } finally {
+      setLoadingItems((prev) => ({ ...prev, [item._id]: false }));
+    }
+  };
+
   return (
     <div className="wardrobe_chat__content w-full shadow-xl shadow-slate-300">
       <div className="w-[100%] h-[90vh] flex flex-col items-center bg-hero-pattern rounded-lg p-4">
         {/* Nội dung chat (scroll được) */}
-        <div className="flex flex-col items-center rounded-lg w-[50%] h-full rounded-xl">
+        <div className="flex flex-col items-center rounded-lg w-[100%] h-full rounded-xl">
           {/* Chat messages */}
           <div
             ref={chatContentRef}
@@ -161,27 +235,41 @@ function Chat({ onOutfitSelect, itemSelect, handleGenerateOutfit }: ChatProps) {
                       <span className="text-sm font-semibold">
                         Gợi ý trang phục:
                       </span>
-                      <div className="flex flex-wrap gap-2 mt-1">
+                      <div className="flex flex-wrap gap-20 justify-center mt-5">
                         {message.outfit.map((item, index) => (
-                          <CardCustom
-                            key={index}
-                            cardSrc={
-                              item === itemSelect?.upper?.id
-                                ? itemSelect?.upper?.imageSrc || ""
-                                : item === itemSelect?.downer?.id
-                                ? itemSelect?.downer?.imageSrc || ""
-                                : item === itemSelect?.shoes?.id
-                                ? itemSelect?.shoes?.imageSrc || ""
-                                : PlaceHolderImage.src
-                            }
-                            cardAlt={item}
-                            cardWidth={100}
-                            cardHeight={100}
-                            className={`!w-[179px] !h-[179px] cursor-pointer transition-all `}
-                          />
+                          <div key={index} className="message-outfit relative">
+                            <CardCustom
+                              cardSrc={
+                                item._id === itemSelect?.upper?.id
+                                  ? itemSelect?.upper?.imageSrc ||
+                                    PlaceHolderImage.src
+                                  : item._id === itemSelect?.downer?.id
+                                  ? itemSelect?.downer?.imageSrc ||
+                                    PlaceHolderImage.src
+                                  : item._id === itemSelect?.shoes?.id
+                                  ? itemSelect?.shoes?.imageSrc ||
+                                    PlaceHolderImage.src
+                                  : item.imageUrl || PlaceHolderImage.src
+                              }
+                              cardAlt={item._id}
+                              cardWidth={100}
+                              cardHeight={100}
+                              className={`!w-[179px] !h-[179px] cursor-pointer transition-all`}
+                            />
+                            <Button
+                              onClick={() => handleReload(item)}
+                              className="absolute top-2 right-2 p-2 rounded-full bg-white/80 hover:bg-white transition-colors duration-200"
+                            >
+                              {loadingItems[item._id] ? (
+                                <LoadingOutlined className="text-xl text-blue-500" />
+                              ) : (
+                                <ReloadOutlined className="text-xl text-gray-600 hover:text-blue-500" />
+                              )}
+                            </Button>
+                          </div>
                         ))}
                       </div>
-                      <div className="btn-generate-outfit my-5">
+                      <div className="flex justify-center mt-4">
                         <ButtonDiscCustom
                           onClick={handleGenerateOutfit}
                           className="shadow-lg shadow-black/25"
@@ -191,7 +279,7 @@ function Chat({ onOutfitSelect, itemSelect, handleGenerateOutfit }: ChatProps) {
                             alt="plus"
                             width={24}
                             height={24}
-                            className="mr-2 "
+                            className="mr-2"
                           />{" "}
                           Tạo Trang Phục
                         </ButtonDiscCustom>
@@ -236,14 +324,18 @@ function Chat({ onOutfitSelect, itemSelect, handleGenerateOutfit }: ChatProps) {
                 <LoadingOutlined className="!text-sky-600" />
               </div>
             )}
-            <div className="flex flex-1 gap-2 items-end relative ">
+            <div className="flex flex-1 gap-2 items-end relative">
               <TextArea
                 disabled={loading}
                 className={`
-    !flex-1 !h-[130px] !rounded-2xl !bg-white !text-black
-    !shadow-md !shadow-blue-500/25 !text-base !border-gray-200 p-5
-    ${loading ? "!opacity-50 !cursor-not-allowed !bg-gray-100 " : ""}
-  `}
+                  !flex-1 !h-[130px] !rounded-2xl !bg-white !text-black
+                  !shadow-md !shadow-blue-500/25 !text-base !border-gray-200 p-5
+                  ${
+                    loading
+                      ? "!opacity-50 !cursor-not-allowed !bg-gray-100"
+                      : ""
+                  }
+                `}
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
                 onKeyPress={handleKeyPress}
@@ -253,11 +345,11 @@ function Chat({ onOutfitSelect, itemSelect, handleGenerateOutfit }: ChatProps) {
               <Button
                 type="primary"
                 size="large"
-                className="!h-[30px] !w-[30px] absolute  !rounded-[100%] !bg-blue-500 hover:!bg-blue-600 !border-none !shadow-md right-2 bottom-2"
+                className="!h-[30px] !w-[30px] absolute !rounded-[100%] !bg-blue-500 hover:!bg-blue-600 !border-none !shadow-md right-2 bottom-2"
                 onClick={handleSendMessage}
                 disabled={!value.trim()}
               >
-                <ArrowRightOutlined className="!text-white !text-lg " />
+                <ArrowRightOutlined className="!text-white !text-lg" />
               </Button>
             </div>
           </div>

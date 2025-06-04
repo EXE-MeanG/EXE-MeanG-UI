@@ -31,7 +31,7 @@
     top: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.05); /* xám nhạt */
+    background: rgba(0, 0, 0, 0.05);
     z-index: 1;
     transition: transform 0.4s ease;
     transform: translateX(-100%);
@@ -41,11 +41,29 @@
     transform: translateX(0);
   }
 
-  /* Đảm bảo input nội dung nằm trên nền */
   .input-hover-animate .ant-input,
   .input-hover-animate .ant-picker {
     position: relative;
     z-index: 1;
     background: transparent !important;
+  }
+
+  /* Outfit Selection Styles */
+  .selected-outfit {
+    border: 1px solid #e6e6e6;
+    transition: all 0.3s ease;
+  }
+
+  .selected-outfit:hover {
+    border-color: #1890ff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .outfit-item {
+    transition: transform 0.2s ease;
+  }
+
+  .outfit-item:hover {
+    transform: scale(1.02);
   }
 }

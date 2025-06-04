@@ -45,6 +45,8 @@ interface ApiItem {
   create_at: string;
   update_at: string;
   __v: number;
+  description?: string;
+  link?: string;
 }
 
 interface ApiResponse {
@@ -56,6 +58,8 @@ interface CarouselItem {
   imageSrc: string;
   imageAlt: string;
   id?: string;
+  description?: string;
+  link?: string;
 }
 
 interface CarouselItems {
@@ -134,6 +138,8 @@ export default function Wardrobe() {
                 imageSrc: item.imageLink,
                 imageAlt: item.name,
                 id: item._id,
+                description: item.description,
+                link: item.link,
               })),
             downers: (itemsResponse.data || [])
               .filter((item) => item.category_enum === "pants")
@@ -141,6 +147,8 @@ export default function Wardrobe() {
                 imageSrc: item.imageLink,
                 imageAlt: item.name,
                 id: item._id,
+                description: item.description,
+                link: item.link,
               })),
             ass: (itemsResponse.data || [])
               .filter((item) => item.category_enum === "shoes")
@@ -148,6 +156,8 @@ export default function Wardrobe() {
                 imageSrc: item.imageLink,
                 imageAlt: item.name,
                 id: item._id,
+                description: item.description,
+                link: item.link,
               })),
           };
           setCarouselItems(transformedData);

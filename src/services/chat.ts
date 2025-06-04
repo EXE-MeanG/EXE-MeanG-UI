@@ -35,11 +35,12 @@ export const ReloadOutfit = async (itemIdChange: string, itemIds: string[]) => {
       itemIdChange,
       itemIds,
     });
-    const { _id, image, link } = res?.data?.data;
+    const { _id, image, link, description } = res?.data?.data;
     return {
       _id,
       image,
       link,
+      description,
     };
   } catch (err: any) {
     if (err.response?.status === 400) {

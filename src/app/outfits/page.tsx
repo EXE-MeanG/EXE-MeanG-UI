@@ -5,6 +5,7 @@ import { Modal, message, Spin } from "antd";
 import Header from "@/src/components/layouts/Header";
 import TypographyCustom from "@/src/components/shared/Typography/TypographyCustom";
 import OutfitCarousel from "@/src/components/FavoriteCarousel";
+import ModalEvent from "@/src/components/shared/ModalEvent/modalEvent";
 import {
   getAllOutfits,
   deleteOutfit,
@@ -16,6 +17,7 @@ import {
   HeartFilled,
   DeleteOutlined,
   LoadingOutlined,
+  CalendarOutlined,
 } from "@ant-design/icons";
 
 export default function Outfits() {
@@ -32,6 +34,8 @@ export default function Outfits() {
   const [itemToDelete, setItemToDelete] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [pageLoading, setPageLoading] = useState(true);
+  const [isEventModalOpen, setIsEventModalOpen] = useState(false);
+  const [selectedOutfit, setSelectedOutfit] = useState<any>(null);
 
   useEffect(() => {
     const token = localStorage.getItem("auth-storage");
@@ -109,13 +113,24 @@ export default function Outfits() {
     }
   };
 
+  const handleCreateEvent = (eventData: any) => {
+    // Handle event creation
+    message.success("Sự kiện đã được tạo");
+    setIsEventModalOpen(false);
+  };
+
+  const handleScheduleClick = (outfit: any) => {
+    setSelectedOutfit(outfit);
+    setIsEventModalOpen(true);
+  };
+
   return (
     <div className="outfits min-h-screen w-100vw">
-      <section className="bg-hero-pattern bg-cover bg-center">
+      <section className="bg-hero-pattern h-[100vh] bg-cover bg-center">
         <Header />
         <div className="px-[100px] py-[50px]">
           <div className="w-full">
-            <TypographyCustom text="YOUR OUTFITS" size={80} />
+            <TypographyCustom text="YOUR OUTFIT " size={80} />
           </div>
           {pageLoading ? (
             <div className="flex justify-center items-center h-[617px]">
@@ -156,6 +171,15 @@ export default function Outfits() {
                   >
                     <DeleteOutlined className="text-xl text-red-500" />
                   </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleScheduleClick(item);
+                    }}
+                    className="p-2 rounded-full bg-white/80 hover:bg-white transition-colors duration-200"
+                  >
+                    <CalendarOutlined className="text-xl text-blue-500" />
+                  </button>
                 </div>
               )}
             />
@@ -183,6 +207,17 @@ export default function Outfits() {
       >
         <p>Bạn có chắc chắn muốn xóa bộ trang phục này?</p>
       </Modal>
+
+      {/* Event Creation Modal */}
+      <ModalEvent
+        isOpen={isEventModalOpen}
+        handleCancle={() => {
+          setIsEventModalOpen(false);
+          setSelectedOutfit(null);
+        }}
+        onEventCreate={handleCreateEvent}
+        preSelectedOutfit={selectedOutfit}
+      />
     </div>
   );
 }

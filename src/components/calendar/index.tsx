@@ -18,7 +18,8 @@ import dayjs from "dayjs";
 import "dayjs/locale/vi";
 import "./style.css";
 import { useDateStore } from "@/src/stores/dateStore";
-import { Modal } from "antd";
+import { Modal, message } from "antd";
+import { getAllEvents, Schedule } from "@/src/services/events";
 
 function generateCustomContent(event: any) {
   const content = `
@@ -53,6 +54,8 @@ interface CalendarEvent {
   end: string;
   location?: string;
   description?: string;
+  outfitId?: string;
+  imageUrl?: string;
   _customContent?: any;
 }
 
@@ -61,7 +64,6 @@ const CalendarApp = forwardRef((props, ref) => {
   const { selectedDate } = useDateStore();
   const [calendar, setCalendar] = useState<any>(null);
   const [eventsPlugin, setEventsPlugin] = useState<any>(null);
-
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(
     null
@@ -101,17 +103,21 @@ const CalendarApp = forwardRef((props, ref) => {
       ],
       callbacks: {
         onEventClick: (event: any) => {
-          setSelectedEvent({
+          const eventData = {
             id: event.id.toString(),
-            title: event.title,
+            title: event.title || event.description,
             start: event.start,
             end: event.end,
             location: event.location,
             description: event.description,
-          });
+            outfitId: event.outfitId,
+            imageUrl: event.imageUrl,
+          };
+          setSelectedEvent(eventData);
           setModalVisible(true);
         },
         onEventUpdate: (updatedEvent: any) => {
+          console.log("onEventUpdate", updatedEvent);
           if (eventsPlugin) {
             eventsPlugin.update(updatedEvent);
           }
@@ -127,6 +133,64 @@ const CalendarApp = forwardRef((props, ref) => {
     }
   }, [selectedDate]);
 
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await getAllEvents();
+        if (response?.data && eventsPlugin) {
+          // Get all current events
+          const currentEvents = eventsPlugin.getAll();
+
+          // Remove each existing event
+          currentEvents.forEach((event: any) => {
+            eventsPlugin.remove(event.id);
+          });
+
+          // Format and add new events
+          const formattedEvents = response.data.map((event: Schedule) => {
+            console.log(event);
+
+            let outfitImageUrl = "";
+            if (event.outfit_id.imageUrl) {
+              outfitImageUrl = event.outfit_id.imageUrl;
+            }
+            return {
+              id: Math.random().toString(36).substr(2, 9),
+              title: event.description || "Untitled Event",
+              start: dayjs(event.start_time).format("YYYY-MM-DD HH:mm"),
+              end: dayjs(event.end_time).format("YYYY-MM-DD HH:mm"),
+              location: event.location,
+              description: event.description,
+              outfitId: event.outfit_id._id,
+              imageUrl: outfitImageUrl,
+              _customContent: generateCustomContent({
+                title: event.description || "Untitled Event",
+                start: event.start_time,
+                end: event.end_time,
+                location: event.location,
+                description: event.description,
+              }),
+            };
+          });
+          // Add new events
+          formattedEvents.forEach((event) => {
+            console.log(event);
+
+            eventsPlugin.add(event);
+          });
+          message.success("Loaded events successfully");
+        }
+      } catch (error) {
+        console.error("Error fetching events:", error);
+        message.error("Failed to load events");
+      }
+    };
+
+    if (eventsPlugin) {
+      fetchEvents();
+    }
+  }, [eventsPlugin]);
+
   return (
     <>
       <div className="calendar-container" ref={calendarRef}>
@@ -141,6 +205,7 @@ const CalendarApp = forwardRef((props, ref) => {
         footer={null}
         centered={false}
         title={selectedEvent?.title}
+        width={600}
       >
         {selectedEvent && (
           <div>
@@ -158,6 +223,12 @@ const CalendarApp = forwardRef((props, ref) => {
             {selectedEvent.description && (
               <p>
                 <strong>Mô tả:</strong> {selectedEvent.description}
+              </p>
+            )}
+            {selectedEvent.outfitId && (
+              <p>
+                <strong>Trang phục:</strong>{" "}
+                <img src={selectedEvent.imageUrl} alt="Outfit" />
               </p>
             )}
           </div>

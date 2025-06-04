@@ -3,8 +3,9 @@ import {
   ArrowRightOutlined,
   LoadingOutlined,
   ReloadOutlined,
+  LinkOutlined,
 } from "@ant-design/icons";
-import { Tag, Button, Image, message } from "antd";
+import { Tag, Button, Image, message, Modal } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import dayjs from "dayjs";
 import React, { useState, useRef, useEffect, use } from "react";
@@ -20,6 +21,7 @@ type OutfitType = {
   _id: string;
   imageUrl?: string;
   link?: string;
+  description?: string;
 };
 
 interface Message {
@@ -41,10 +43,12 @@ function Chat({ onOutfitSelect, itemSelect, handleGenerateOutfit }: ChatProps) {
   const [value, setValue] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
-  const chatContentRef = useRef<HTMLDivElement>(null);
   const [loadingItems, setLoadingItems] = useState<{ [key: string]: boolean }>(
     {}
   );
+  const [selectedItem, setSelectedItem] = useState<OutfitType | null>(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const chatContentRef = useRef<HTMLDivElement>(null);
 
   const suggestedTags = [
     "Trang phục hôm nay là gì?",
@@ -105,16 +109,26 @@ function Chat({ onOutfitSelect, itemSelect, handleGenerateOutfit }: ChatProps) {
       const outfitItems =
         botResponses.outfit?.map((id) => {
           let imageUrl = PlaceHolderImage.src;
+          let description = "";
+          let link = "";
           if (itemSelect?.upper?.id === id) {
             imageUrl = itemSelect.upper.imageSrc;
+            description = itemSelect.upper.description || "";
+            link = itemSelect.upper.link || "";
           } else if (itemSelect?.downer?.id === id) {
             imageUrl = itemSelect.downer.imageSrc;
+            description = itemSelect.downer.description || "";
+            link = itemSelect.downer.link || "";
           } else if (itemSelect?.shoes?.id === id) {
             imageUrl = itemSelect.shoes.imageSrc;
+            description = itemSelect.shoes.description || "";
+            link = itemSelect.shoes.link || "";
           }
           return {
             _id: id,
             imageUrl,
+            description,
+            link,
           };
         }) || [];
 
@@ -167,8 +181,9 @@ function Chat({ onOutfitSelect, itemSelect, handleGenerateOutfit }: ChatProps) {
         _id: response._id,
         imageUrl: response.image,
         link: response.link,
+        description: response.description,
       };
-
+      console.log(newOutFitItem);
       // Update the outfit in the messages
       setMessages((prevMessages) =>
         prevMessages.map((message) => {
@@ -203,8 +218,59 @@ function Chat({ onOutfitSelect, itemSelect, handleGenerateOutfit }: ChatProps) {
     }
   };
 
+  const handleItemClick = (item: OutfitType) => {
+    setSelectedItem(item);
+    setIsModalVisible(true);
+  };
+
+  const handleModalClose = () => {
+    setSelectedItem(null);
+    setIsModalVisible(false);
+  };
+
   return (
     <div className="wardrobe_chat__content w-full shadow-xl shadow-slate-300">
+      {/* Item Detail Modal */}
+      <Modal
+        title="Chi tiết trang phục"
+        open={isModalVisible}
+        onCancel={handleModalClose}
+        footer={[
+          <Button key="close" onClick={handleModalClose}>
+            Đóng
+          </Button>,
+          selectedItem?.link && (
+            <Button
+              key="link"
+              type="primary"
+              icon={<LinkOutlined />}
+              onClick={() => window.open(selectedItem.link, "_blank")}
+            >
+              Xem sản phẩm
+            </Button>
+          ),
+        ]}
+        width={600}
+      >
+        {selectedItem && (
+          <div className="flex flex-col gap-4">
+            <div className="w-full flex justify-center">
+              <Image
+                src={selectedItem.imageUrl || PlaceHolderImage.src}
+                alt="Item detail"
+                className="max-h-[400px] object-contain"
+              />
+            </div>
+            {selectedItem.description && (
+              <div className="mt-4">
+                <h3 className="text-lg font-semibold mb-2">Mô tả:</h3>
+                <p className="text-gray-600">{selectedItem.description}</p>
+              </div>
+            )}
+          </div>
+        )}
+      </Modal>
+
       <div className="w-[100%] h-[90vh] flex flex-col items-center bg-hero-pattern rounded-lg p-4">
         {/* Nội dung chat (scroll được) */}
         <div className="flex flex-col items-center rounded-lg w-[100%] h-full rounded-xl">
@@ -254,7 +320,8 @@ function Chat({ onOutfitSelect, itemSelect, handleGenerateOutfit }: ChatProps) {
                               cardAlt={item._id}
                               cardWidth={100}
                               cardHeight={100}
-                              className={`!w-[179px] !h-[179px] cursor-pointer transition-all`}
+                              className={`!w-[179px] !h-[179px] cursor-pointer transition-all hover:scale-105`}
+                              onClick={() => handleItemClick(item)}
                             />
                             <Button
                               onClick={() => handleReload(item)}

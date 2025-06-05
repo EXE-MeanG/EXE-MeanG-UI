@@ -11,6 +11,7 @@ interface CardCustom {
   cardWidth?: number;
   cardHeight?: number;
   onClick?: () => void;
+  classImage?: string;
 }
 
 const CardCustom: React.FC<CardCustom> = ({
@@ -20,6 +21,7 @@ const CardCustom: React.FC<CardCustom> = ({
   cardWidth = 24,
   cardHeight = 24,
   onClick,
+  classImage,
 }) => {
   return (
     <div
@@ -27,14 +29,14 @@ const CardCustom: React.FC<CardCustom> = ({
       onClick={onClick}
     >
       <div className=" w-full h-full rounded-sm bg-main-background "></div>
-      <div className="absolute  top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+      <div className="absolute  top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 overflow-hidden">
         <Image
           preview={false}
           src={cardSrc}
           alt={cardAlt}
           width={cardWidth}
           height={cardHeight}
-          className="!w-[80%] !h-[80%] !object-cover !absolute !top-1/2 !left-1/2 !transform -translate-x-1/2 -translate-y-1/2  "
+          className={`!w-[80%] !h-[80%] !object-cover !absolute !top-1/2 !left-1/2 !transform -translate-x-1/2 -translate-y-1/2 ${classImage} `}
         />
       </div>
     </div>

@@ -11,7 +11,7 @@ import dayjs from "dayjs";
 import React, { useState, useRef, useEffect, use } from "react";
 import { GlitchReveal } from "../shared/GlitchTypo";
 import CardCustom from "../shared/Card/cardCustom";
-import { SelectedItems } from "@/src/app/wardrobe/page";
+import { ApiItem, SelectedItems } from "@/src/app/wardrobe/page";
 import ButtonDiscCustom from "@/src/components/shared/ButtonDIsc/discCustom";
 import PlaceHolderImage from "../../assets/images/placeholder.png";
 import Plus from "../../assets/icons/plus.png";
@@ -35,11 +35,11 @@ interface Message {
 
 interface ChatProps {
   onOutfitSelect?: (outfit: string[]) => void;
-  itemSelect?: SelectedItems;
+  items: ApiItem[];
   handleGenerateOutfit: () => void;
 }
 
-function Chat({ onOutfitSelect, itemSelect, handleGenerateOutfit }: ChatProps) {
+function Chat({ onOutfitSelect, items, handleGenerateOutfit }: ChatProps) {
   const [value, setValue] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
@@ -108,27 +108,12 @@ function Chat({ onOutfitSelect, itemSelect, handleGenerateOutfit }: ChatProps) {
       const botResponses: ChatResponse = await Chatting({ question: value });
       const outfitItems =
         botResponses.outfit?.map((id) => {
-          let imageUrl = PlaceHolderImage.src;
-          let description = "";
-          let link = "";
-          if (itemSelect?.upper?.id === id) {
-            imageUrl = itemSelect.upper.imageSrc;
-            description = itemSelect.upper.description || "";
-            link = itemSelect.upper.link || "";
-          } else if (itemSelect?.downer?.id === id) {
-            imageUrl = itemSelect.downer.imageSrc;
-            description = itemSelect.downer.description || "";
-            link = itemSelect.downer.link || "";
-          } else if (itemSelect?.shoes?.id === id) {
-            imageUrl = itemSelect.shoes.imageSrc;
-            description = itemSelect.shoes.description || "";
-            link = itemSelect.shoes.link || "";
-          }
+          const item = items.find((item) => item._id === id);
           return {
             _id: id,
-            imageUrl,
-            description,
-            link,
+            imageUrl: item?.imageLink || PlaceHolderImage.src,
+            description: item?.description || "",
+            link: item?.link || "",
           };
         }) || [];
 
@@ -305,18 +290,7 @@ function Chat({ onOutfitSelect, itemSelect, handleGenerateOutfit }: ChatProps) {
                         {message.outfit.map((item, index) => (
                           <div key={index} className="message-outfit relative">
                             <CardCustom
-                              cardSrc={
-                                item._id === itemSelect?.upper?.id
-                                  ? itemSelect?.upper?.imageSrc ||
-                                    PlaceHolderImage.src
-                                  : item._id === itemSelect?.downer?.id
-                                  ? itemSelect?.downer?.imageSrc ||
-                                    PlaceHolderImage.src
-                                  : item._id === itemSelect?.shoes?.id
-                                  ? itemSelect?.shoes?.imageSrc ||
-                                    PlaceHolderImage.src
-                                  : item.imageUrl || PlaceHolderImage.src
-                              }
+                              cardSrc={item.imageUrl || PlaceHolderImage.src}
                               cardAlt={item._id}
                               cardWidth={100}
                               cardHeight={100}

@@ -274,6 +274,7 @@ export default function Home() {
             cardWidth={1450}
             cardHeight={782}
             className="w-[1442px] h-[782px]"
+            classImage="!w-[1432px] !h-[770px]"
           />
           <p className="absolute bottom-0 left-10 text-3xl text-primary font-semibold mb-6 w-[70%] text-start">
             Chúng tôi là một nhóm sinh viên từ Đại học FPT Đà Nẵng, và đây là dự

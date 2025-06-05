@@ -80,39 +80,46 @@ function ModalEvent({
     }
   };
 
-  const handleSave = () => {
-    form
-      .validateFields()
-      .then((values) => {
-        if (onEventCreate) {
-          const eventData = {
-            title: values.title,
-            start: dayjs(values.startTime).format("YYYY-MM-DD HH:mm"),
-            end: dayjs(values.endTime).format("YYYY-MM-DD HH:mm"),
-            location: values.location,
-            description: values.description,
-            outfitId: selectedOutfit?._id,
-            imageUrl: selectedOutfit?.imageUrl,
-          };
-          onEventCreate(eventData);
-          addEvent({
-            outfit_id: {
-              _id: selectedOutfit?._id || "",
-              imageUrl: selectedOutfit?.imageUrl || "",
-            },
-            start_time: dayjs(eventData.start).toDate(),
-            end_time: dayjs(eventData.end).toDate(),
-            description: eventData.description || "",
-            location: eventData.location || "",
-          });
-        }
-        handleCancle();
-        form.resetFields();
-        setSelectedOutfit(null);
-      })
-      .catch((errorInfo) => {
-        console.log("Có lỗi", errorInfo);
+  const handleSave = async () => {
+    try {
+      const values = await form.validateFields();
+
+      const eventData = {
+        title: values.title,
+        start: dayjs(values.startTime).format("YYYY-MM-DD HH:mm"),
+        end: dayjs(values.endTime).format("YYYY-MM-DD HH:mm"),
+        location: values.location,
+        description: values.description,
+        outfitId: selectedOutfit?._id,
+        imageUrl: selectedOutfit?.imageUrl,
+      };
+
+      // First make the API call
+      const response = await addEvent({
+        outfit_id: {
+          _id: selectedOutfit?._id || "",
+          imageUrl: selectedOutfit?.imageUrl || "",
+        },
+        start_time: dayjs(eventData.start).toDate(),
+        end_time: dayjs(eventData.end).toDate(),
+        description: eventData.description || "",
+        location: eventData.location || "",
       });
+
+      // If API call is successful, update the UI
+      if (response && onEventCreate) {
+        onEventCreate(eventData);
+        message.success("Sự kiện đã được tạo thành công");
+      }
+
+      // Close modal and reset form
+      handleCancle();
+      form.resetFields();
+      setSelectedOutfit(null);
+    } catch (error: any) {
+      console.error("Error creating event:", error);
+      message.error(error.message || "Có lỗi xảy ra khi tạo sự kiện");
+    }
   };
 
   const handleOutfitSelect = (outfit: Outfit) => {

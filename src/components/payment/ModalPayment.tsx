@@ -32,11 +32,11 @@ const ModalPayment: React.FC<ModalPaymentProps> = ({ isOpen, onClose }) => {
       className="pricing-modal !w-[65vw]"
       title={
         <div className="text-center">
-          <div className="text-indigo-500 font-semibold text-lg mb-2">
-            Pricing Plans
+          <div className="text-[var(--border-primary)] font-semibold text-lg mb-2">
+            Các gói dịch vụ
           </div>
           <h2 className="text-3xl font-bold mb-2">
-            Choose the perfect plan for your needs
+            Hãy chọn gói phù hợp nhất với nhu cầu của bạn nhé!
           </h2>
         </div>
       }
@@ -45,9 +45,9 @@ const ModalPayment: React.FC<ModalPaymentProps> = ({ isOpen, onClose }) => {
         {plans.map((plan) => (
           <div
             key={plan.name}
-            className={`relative bg-indigo-50 rounded-2xl p-8 flex flex-col items-center shadow-md border-2 ${
+            className={`relative bg-indigo-50 rounded-2xl p-8 flex flex-col items-center justify-between shadow-md border-2 ${
               plan.highlight
-                ? "border-yellow-400 bg-white scale-105 z-10"
+                ? "border-[var(--border-primary)] bg-white scale-105 z-10"
                 : "border-transparent"
             }`}
           >
@@ -72,7 +72,7 @@ const ModalPayment: React.FC<ModalPaymentProps> = ({ isOpen, onClose }) => {
             </ul>
             <Button
               type="primary"
-              className="w-full !bg-indigo-500 !border-indigo-500 !rounded-lg !h-12 !text-lg font-semibold"
+              className="w-full !bg-[var(--border-primary)] !border-indigo-500 !rounded-lg !h-12 !text-lg font-semibold"
               size="large"
               onClick={() => handleChoose(plan)}
             >

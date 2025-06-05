@@ -34,7 +34,7 @@ import OutfitCarousel from "@/src/components/FavoriteCarousel";
 import { getUserProfile } from "@/src/services/user";
 import ModalPayment from "@/src/components/payment/ModalPayment";
 
-interface ApiItem {
+export interface ApiItem {
   _id: string;
   user: string;
   name: string;
@@ -80,11 +80,11 @@ const getUserItemsTyped: GetUserItemsFunction = getUserItems;
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 export default function Wardrobe() {
   const [isModalPaymentOpen, setIsModalPaymentOpen] = useState(false);
-  const [generatedOutfit, setGeneratedOutfit] = useState("");
   const [generatedOutfitImage, setGeneratedOutfitImage] = useState<string>(
     Model1.src
   );
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isUploadingBody, setIsUploadingBody] = useState(false);
   const router = useRouter();
   const token = useAuthStore.getState().accessToken;
   const [isOpen, setIsOpen] = useState(false);
@@ -114,10 +114,9 @@ export default function Wardrobe() {
     type: "item" | "outfit";
   } | null>(null);
   const [loading, setLoading] = useState(false);
-  const [initOutfit, setInitOutfit] = useState(Model1.src);
   const [pageLoading, setPageLoading] = useState(true);
   const [itemsLoading, setItemsLoading] = useState(true);
-
+  const [items, setItems] = useState<ApiItem[]>([]);
   useEffect(() => {
     const token = localStorage.getItem("auth-storage");
     if (!token) router.push("/login");
@@ -129,7 +128,7 @@ export default function Wardrobe() {
             getUserItemsTyped(),
             getUserProfile(),
           ]);
-
+          setItems(itemsResponse.data);
           // Handle items
           const transformedData: CarouselItems = {
             uppers: (itemsResponse.data || [])
@@ -242,6 +241,7 @@ export default function Wardrobe() {
           [key]: [
             ...prev[key],
             {
+              id: result.data._id,
               imageSrc: file ? URL.createObjectURL(file) : imageUrl,
               imageAlt: file ? file.name : "Uploaded Image",
             },
@@ -308,16 +308,13 @@ export default function Wardrobe() {
   };
 
   const handleOutfitSelection = (outfit: string[]) => {
-    // Create a new selected items object
     const newSelectedItems: SelectedItems = {
       upper: null,
       downer: null,
       shoes: null,
     };
 
-    // For each outfit ID, try to find it in any of the categories
     outfit.forEach((outfitId) => {
-      // Try to find in uppers
       const upperMatch = carouselItems.uppers.find(
         (item) => item.id === outfitId
       );
@@ -495,14 +492,22 @@ export default function Wardrobe() {
                     beforeUpload={beforeUpload}
                     showUploadList={false}
                     onChange={(info) => {
-                      if (info.file.status !== "uploading") {
-                        console.log(info.file, info.fileList);
+                      if (info.file.status === "uploading") {
+                        setIsUploadingBody(true);
                       }
                       if (info.file.status === "done") {
+                        setIsUploadingBody(false);
                         message.success(
                           `${info.file.name} file uploaded successfully`
                         );
+                        // Set the generated outfit image from the response
+                        if (info.file.response?.data?.bodyImageUrl) {
+                          setGeneratedOutfitImage(
+                            info.file.response.data.bodyImageUrl
+                          );
+                        }
                       } else if (info.file.status === "error") {
+                        setIsUploadingBody(false);
                         message.error(`${info.file.name} file upload failed.`);
                       }
                     }}
@@ -512,14 +517,34 @@ export default function Wardrobe() {
                         cardSrc={generatedOutfitImage}
                         cardWidth={411}
                         cardHeight={617}
-                        className="w-[411px] h-[617px]"
+                        className="w-[411px] h-[617px] "
+                        classImage="!w-[98%] !h-[98%]"
                       />
                       <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <UploadOutlined className="text-4xl text-white mb-2" />
-                        <span className="text-white text-xl font-semibold">
-                          Tải lên hình ảnh của bạn
-                        </span>
+                        {isUploadingBody ? (
+                          <>
+                            <LoadingOutlined className="text-4xl text-white mb-2" />
+                            <span className="text-white text-xl font-semibold">
+                              Đang tải lên...
+                            </span>
+                          </>
+                        ) : (
+                          <>
+                            <UploadOutlined className="text-4xl text-white mb-2" />
+                            <span className="text-white text-xl font-semibold">
+                              Tải lên hình ảnh của bạn
+                            </span>
+                          </>
+                        )}
                       </div>
+                      {isUploadingBody && (
+                        <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center">
+                          <LoadingOutlined className="text-4xl text-white mb-2" />
+                          <span className="text-white text-xl font-semibold">
+                            Đang tải lên...
+                          </span>
+                        </div>
+                      )}
                     </div>
                   </Upload>
                   <button
@@ -611,7 +636,7 @@ export default function Wardrobe() {
         <TypographyCustom text="AI GENERATE" size={80} />
         <Chat
           onOutfitSelect={handleOutfitSelection}
-          itemSelect={selectedItems}
+          items={items}
           handleGenerateOutfit={handleGenerateOutfit}
         />
       </section>

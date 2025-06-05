@@ -33,7 +33,7 @@ const AvaDiscCustom: React.FC<AvaDiscCustom> = ({
 
   return (
     <div
-      className={`relative h-32 w-32 ${className}`}
+      className={`relative h-32 w-32 overflow-hidden ${className}`}
       onMouseEnter={() => setDirection(-1)}
       onMouseLeave={() => setDirection(1)}
     >
@@ -45,20 +45,20 @@ const AvaDiscCustom: React.FC<AvaDiscCustom> = ({
           transition: "transform 0.05s linear",
         }}
       >
-        <div className="bg-primary w-full h-full rounded-full circle-center " />
+        <div className="bg-primary w-full h-full rounded-full circle-center overflow-hidden" />
       </div>
 
       {/* ✅ Mặt nạ trắng ở trên */}
-      <div className="absolute inset-0 rounded-full  bg-white opacity-60 pointer-events-none z-10" />
+      <div className="absolute overflow-hidden inset-0 rounded-full  bg-white opacity-60 pointer-events-none z-10" />
 
       {/* Icon trung tâm */}
-      <div className=" p-[4px] rounded-full overflow-hidden relative z-20">
+      <div className=" w-full h-full p-[4px] rounded-full overflow-hidden relative z-20">
         <Image
           src={iconSrc}
           alt={iconAlt}
-          width={100}
-          height={100}
-          className="!w-full !h-full object-cover rounded-full"
+          width={200}
+          height={200}
+          className={`!w-full !h-full object-cover rounded-full `}
         />
       </div>
       <div className="absolute bottom-0 right-0 transform translate-x-1/6 translate-y-1/6 bg-blue-100 rounded-full p-2  z-20">

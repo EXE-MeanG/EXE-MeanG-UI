@@ -196,8 +196,7 @@ function Chat({ onOutfitSelect, items, handleGenerateOutfit }: ChatProps) {
       }
       message.success("Trang phục đã được tạo lại");
     } catch (error) {
-      console.error("Error reloading outfit:", error);
-      message.error("Failed to reload outfit");
+      message.error("Không thể lấy trang phục mới");
     } finally {
       setLoadingItems((prev) => ({ ...prev, [item._id]: false }));
     }

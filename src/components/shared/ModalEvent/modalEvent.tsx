@@ -73,8 +73,7 @@ function ModalEvent({
         );
       }
     } catch (error) {
-      console.error("Error fetching outfits:", error);
-      message.error("Failed to load outfits");
+      message.error("Lỗi khi lấy trang phục");
     } finally {
       setLoadingOutfits(false);
     }

@@ -178,11 +178,9 @@ const CalendarApp = forwardRef((props, ref) => {
 
             eventsPlugin.add(event);
           });
-          message.success("Loaded events successfully");
         }
       } catch (error) {
-        console.error("Error fetching events:", error);
-        message.error("Failed to load events");
+        message.error("Lỗi khi lấy lịch sự kiện");
       }
     };
 

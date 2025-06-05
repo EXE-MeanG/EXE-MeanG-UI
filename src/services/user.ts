@@ -19,6 +19,7 @@ export interface UserProfile {
   outfitFavourite: any[];
   createdAt: string;
   updatedAt: string;
+  avatar: string;
 }
 
 export interface UpdateProfilePayload {
@@ -70,5 +71,25 @@ export const updateProfile = async (data: UpdateProfilePayload) => {
       throw new Error(message);
     }
     throw new Error("Cập nhật thông tin thất bại. Vui lòng thử lại.");
+  }
+};
+export const uploadAvatar = async (file: File) => {
+  try {
+    const formData = new FormData();
+    console.log(file);
+
+    formData.append("avatar", file);
+    const res = await api.getInstance().post("/api/v1/user/avatar", formData);
+    return {
+      httpStatusCode: res.status,
+      data: res?.data?.data,
+    };
+  } catch (err: any) {
+    if (err.response?.status === 400) {
+      const message =
+        err.response.data.errors[0].errorMessage || "Upload avatar thất bại";
+      throw new Error(message);
+    }
+    throw new Error("Lấy thông tin thất bại. Vui lòng thử lại.");
   }
 };

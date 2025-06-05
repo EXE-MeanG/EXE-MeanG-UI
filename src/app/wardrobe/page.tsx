@@ -166,8 +166,7 @@ export default function Wardrobe() {
             setGeneratedOutfitImage(profileResponse.data.bodyImageUrl);
           }
         } catch (error) {
-          console.error("Error loading data:", error);
-          message.error("Failed to load wardrobe data");
+          message.error("Lỗi khi lấy dữ liệu kho đồ");
         } finally {
           setPageLoading(false);
           setItemsLoading(false);
@@ -192,8 +191,7 @@ export default function Wardrobe() {
           );
         }
       } catch (error) {
-        console.error("Error fetching outfits:", error);
-        message.error("Failed to load outfits");
+        message.error("Lỗi khi lấy trang phục");
       }
     };
 
@@ -298,11 +296,11 @@ export default function Wardrobe() {
   const beforeUpload = (file: FileType) => {
     const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
     if (!isJpgOrPng) {
-      message.error("You can only upload JPG/PNG file!");
+      message.error("Chỉ cho phép định dạng JPG/PNG file!");
     }
     const isLt2M = file.size / 1024 / 1024 < 2;
     if (!isLt2M) {
-      message.error("Image must smaller than 2MB!");
+      message.error("Ảnh nên nhỏ hơn 2MB!");
     }
     return isJpgOrPng && isLt2M;
   };
@@ -371,7 +369,6 @@ export default function Wardrobe() {
       }
     } catch (error: any) {
       message.error(error?.message || "Thêm vào yêu thích thất bại");
-      console.error("Add to favorite error:", error);
     }
   };
 
@@ -508,7 +505,7 @@ export default function Wardrobe() {
                         }
                       } else if (info.file.status === "error") {
                         setIsUploadingBody(false);
-                        message.error(`${info.file.name} file upload failed.`);
+                        message.error(`${info.file.name} Upload thất bại.`);
                       }
                     }}
                   >

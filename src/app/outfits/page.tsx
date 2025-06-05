@@ -61,8 +61,7 @@ export default function Outfits() {
         );
       }
     } catch (error) {
-      console.error("Error fetching outfits:", error);
-      message.error("Failed to load outfits");
+      message.error("Lỗi khi lấy trang phục");
     } finally {
       setPageLoading(false);
     }
@@ -87,7 +86,6 @@ export default function Outfits() {
       }
     } catch (error: any) {
       message.error(error?.message || "Thêm vào yêu thích thất bại");
-      console.error("Add to favorite error:", error);
     }
   };
 

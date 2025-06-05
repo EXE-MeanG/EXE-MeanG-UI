@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import Image from "next/image";
+import { Image } from "antd";
 import "./avatarDiscCustom.css";
 import { CameraOutlined } from "@ant-design/icons";
 

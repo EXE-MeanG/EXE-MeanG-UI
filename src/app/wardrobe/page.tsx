@@ -247,11 +247,10 @@ export default function Wardrobe() {
         };
       });
 
-      message.success(`${type} uploaded successfully`);
+      message.success(`${type} Trang phục đã được tải thành công`);
       return result;
     } catch (error) {
-      message.error("Failed to upload image");
-      console.error("Upload error:", error);
+      message.error("Không thể tải trang phục");
     }
   };
 
@@ -494,9 +493,7 @@ export default function Wardrobe() {
                       }
                       if (info.file.status === "done") {
                         setIsUploadingBody(false);
-                        message.success(
-                          `${info.file.name} file uploaded successfully`
-                        );
+                        message.success(`${info.file.name} Upload thành công`);
                         // Set the generated outfit image from the response
                         if (info.file.response?.data?.bodyImageUrl) {
                           setGeneratedOutfitImage(

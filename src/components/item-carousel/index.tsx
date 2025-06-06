@@ -98,14 +98,14 @@ function ItemCarousel({
   const handleChange: UploadProps["onChange"] = async (info) => {
     if (info.file.status === "uploading") {
       setIsOpen(false);
-      setIsUploading(true);
 
       return;
     }
     if (info.file.status === "done") {
-      setIsUploading(false);
+      setIsUploading(true);
       if (onUpload && info.file.originFileObj) {
         await onUpload(type, info.file.originFileObj);
+        setIsUploading(false);
       }
     }
   };
@@ -138,6 +138,7 @@ function ItemCarousel({
           slidesToShow={4}
           className="!w-[900px] !h-[179px]"
           ref={carouselRef}
+          infinite={false}
         >
           {items.map((item, index) => (
             <div key={index} className="px-2">

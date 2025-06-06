@@ -78,10 +78,7 @@ function ItemCarousel({
       }
       setLinkValue("");
       setIsOpen(false);
-      message.success(`${type} uploaded successfully`);
     } catch (error) {
-      message.error("Failed to upload image");
-      console.error("Upload error:", error);
     } finally {
       setIsUploading(false);
     }
